@@ -1,0 +1,65 @@
+LES MERS DE L'ASCENSION — application mobile (cartes v25)
+==========================================================
+
+Ce dossier contient l'application complète :
+  index.html, sw.js, manifest.webmanifest, icon-192.png, icon-512.png
+Envoyez les 5 fichiers ensemble ; ce guide (LISEZ-MOI.txt) n'est pas nécessaire en ligne.
+
+
+1. LA METTRE EN LIGNE (une seule fois, gratuit)
+-----------------------------------------------
+La caméra et le mode hors ligne ne marchent que sur une adresse « https ».
+Il faut donc déposer les fichiers sur un hébergement gratuit. Le plus simple : GitHub Pages.
+
+  a. Créez un compte sur github.com (gratuit).
+  b. Bouton « + » en haut à droite > « New repository ».
+     Nom : mers-ascension · cochez « Public » · « Create repository ».
+  c. Cliquez « uploading an existing file », glissez les 5 fichiers, puis « Commit changes ».
+  d. Onglet « Settings » > « Pages » > Source : « Deploy from a branch »,
+     Branch : « main » et « / (root) » > « Save ».
+  e. Attendez 1 à 2 minutes. Votre adresse sera :
+     https://VOTRE-PSEUDO.github.io/mers-ascension/
+
+Autre possibilité sans GitHub : app.netlify.com/drop, puis glisser le dossier
+(créez un compte gratuit pour que le site reste en ligne).
+
+
+2. L'INSTALLER SUR CHAQUE TÉLÉPHONE (avec internet, une fois)
+-------------------------------------------------------------
+Ouvrez l'adresse, puis :
+  - Android (Chrome) : menu ⋮ > « Installer l'application » ou « Ajouter à l'écran d'accueil ».
+  - iPhone (Safari) : bouton Partager > « Sur l'écran d'accueil ».
+Ouvrez-la une fois avec internet : elle est ensuite gardée sur le téléphone
+et fonctionne sans connexion internet.
+
+
+3. JOUER ENSEMBLE
+-----------------
+  - Tout le monde se connecte au même Wi-Fi, ou au partage de connexion d'un des
+    téléphones. Pas besoin d'internet pendant la partie.
+  - Un joueur touche « Créer une partie » : son téléphone devient l'hôte.
+    C'est lui qui fait jouer les bots ; il doit garder l'application ouverte.
+  - Pour chaque ami, l'hôte touche « + Téléphone d'un ami » :
+      étape 1 : l'ami touche « Rejoindre une partie » et scanne le code de l'hôte ;
+      étape 2 : l'hôte touche « Il a scanné » et scanne le code de l'ami.
+  - Ajoutez des bots si vous voulez (2 à 5 joueurs au total), puis « Lancer la partie ».
+  - Pour jouer seul : « Jouer seul contre des bots ».
+
+Pendant la partie, chaque téléphone a 4 onglets :
+  Navire (vos cartes et vos valeurs de dé), Marché, Équipage (les autres joueurs), Journal.
+Le panneau du bas montre les dés et ce que vous devez décider.
+
+
+4. SI ÇA NE SE CONNECTE PAS
+---------------------------
+  - Certains Wi-Fi (hôtels, gares, Wi-Fi « invités ») empêchent les appareils de se
+    parler : utilisez plutôt le partage de connexion d'un des téléphones.
+  - Autorisez la caméra quand l'application la demande. Sans caméra, chaque écran
+    propose aussi de copier et coller le code.
+  - Tous les téléphones doivent avoir la même version : en cas de message
+    « Version différente », rechargez l'application sur chacun (avec internet).
+  - Un téléphone qui ne donne plus de nouvelles pendant 1 minute est remplacé par
+    un bot. Il ne peut pas revenir dans cette partie, mais l'hôte peut relancer
+    une partie avec le même équipage.
+
+Bibliothèques incluses : qrcode-generator (licence MIT), jsQR (licence Apache 2.0).
