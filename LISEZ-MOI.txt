@@ -28,7 +28,9 @@ Ouvrez l'adresse, puis :
 -----------------
   - Un joueur touche « Créer une partie » : son téléphone affiche un code de 4 lettres
     (par exemple BWAN). C'est lui qui fait jouer les bots ; il garde l'application ouverte.
-  - Les autres touchent « Rejoindre une partie » et tapent ce code.
+  - Les autres touchent « Rejoindre avec un code » et tapent ce code.
+    Une seule personne crée la partie : si chacun touche « Créer une partie »,
+    chaque téléphone joue sa propre partie séparée.
   - Ajoutez des bots si vous voulez (2 à 5 joueurs au total), puis « Lancer la partie ».
   - Pour jouer seul : « Jouer seul contre des bots » (fonctionne sans internet).
 
@@ -37,9 +39,13 @@ un service gratuit (PeerJS) sert à mettre les téléphones en relation. Ensuite
 téléphones jouent en direct entre eux. En général, il n'est même pas obligatoire
 d'être sur le même Wi-Fi.
 
-Pendant la partie, chaque téléphone a 4 onglets :
+Pendant la partie, la barre du haut indique toujours qui doit jouer
+(« À vous de jouer » ou « Tour de … »). Chaque téléphone a 4 onglets :
   Navire (vos cartes et vos valeurs de dé), Marché, Équipage (les autres joueurs), Journal.
-Le panneau du bas montre les dés et ce que vous devez décider.
+Le panneau d'action (en bas, ou à droite en paysage) montre les dés et vos choix.
+Pendant le tour d'un autre, il peut vous demander une « Réaction » (payer ou passer) :
+c'est normal, c'est vous qui décidez.
+Le téléphone peut être tenu en portrait ou en paysage.
 
 
 4. SI ÇA NE SE CONNECTE PAS

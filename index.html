@@ -3,10 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#b97446">
+<meta name="theme-color" content="#f4f2ee" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121416" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Mers">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
@@ -14,195 +15,174 @@
 <title>Les Mers de l'Ascension</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* Mobile d'abord. Chaque téléphone est un plateau personnel : en-tête (ordre du tour, scores),
-   onglets Navire / Marché / Équipage / Journal, panneau d'action toujours visible en bas. Thème unique, clair. */
+/* Minimaliste, téléphone d'abord.
+   Portrait : barre d'état · contenu · panneau d'action · onglets.  Paysage : onglets en colonne · contenu · panneau d'action à droite.
+   Une seule couleur d'accent (bleu marine), les Voies en pastilles de couleur. Clair et sombre selon le téléphone. */
 :root{
-  --table:#b97446; --table-dark:#8a4f2c; --paper:#fdf1d6; --paper-2:#f4e0b5; --paper-3:#ead09a;
-  --ink:#3b2314; --ink-soft:#7a5638; --frame:#2f2342; --frame-2:#43325e; --frame-text:#d9cdef;
-  --coin:#f7a928; --gold:#f5b324; --gold-dark:#b97a10; --white:#ffffff;
-  --go:#4cc26a; --go-dark:#2c8a45; --sky:#3f9be8; --sky-dark:#2468a8; --alert:#e2513f;
-  --v-ing:#ec8436; --v-fla:#e9473c; --v-rec:#1fae82; --v-lum:#efb81d; --v-aby:#8457ea; --v-cou:#3597ea; --v-sta:#8592a0;
-  --f-display:'Lilita One', 'Arial Rounded MT Bold', 'Trebuchet MS', system-ui, sans-serif;
-  --f-body:'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --safe-b: env(safe-area-inset-bottom, 0px); --safe-t: env(safe-area-inset-top, 0px);
+  --bg:#f4f2ee; --surface:#ffffff; --surface-2:#efece6; --line:#e3ded5; --text:#1c1a17; --muted:#726b63;
+  --accent:#1f6fb2; --accent-ink:#ffffff; --good:#2b8f55; --warn:#c2412d; --gold:#b9840f;
+  --v-ing:#d9822b; --v-fla:#d34a3c; --v-rec:#1d9a74; --v-lum:#c39a14; --v-aby:#7a5ad3; --v-cou:#2f84d4; --v-sta:#868c94;
+  --f:'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   color-scheme:light;
 }
-*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
-html,body{margin:0; min-height:100%}
-body{
-  background:repeating-linear-gradient(90deg, rgba(0,0,0,.035) 0 2px, transparent 2px 46px), radial-gradient(ellipse 120% 80% at 50% 0%, #c98454 0%, var(--table) 55%, var(--table-dark) 100%) fixed, var(--table);
-  color:var(--ink); font-family:var(--f-body); font-weight:700; font-size:15px; line-height:1.35;
-  padding-left:max(12px, env(safe-area-inset-left, 0px)); padding-right:max(12px, env(safe-area-inset-right, 0px));
-  padding-top:calc(var(--safe-t) + 10px);
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#121416; --surface:#1b1e21; --surface-2:#24282c; --line:#31363b; --text:#ecebe8; --muted:#9aa1a8;
+    --accent:#5aa6e6; --accent-ink:#0b1520; --good:#4cc27a; --warn:#ef6b56; --gold:#e2b44b; color-scheme:dark; }
 }
-body.ingame{padding-bottom:calc(var(--safe-b) + 250px)}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+html,body{margin:0; height:100%}
+body{background:var(--bg); color:var(--text); font:500 15px/1.4 var(--f); -webkit-font-smoothing:antialiased; -webkit-text-size-adjust:100%}
+button,input{font:inherit}
 [hidden]{display:none!important}
-h1,h2,h3{font-family:var(--f-display); font-weight:400; margin:0; letter-spacing:.3px; text-wrap:balance}
-.wrap{max-width:900px; margin:0 auto; display:grid; gap:14px}
-.paper{background:var(--paper); border:3px solid var(--ink); border-radius:18px; box-shadow:0 5px 0 var(--table-dark); padding:12px 14px; min-width:0}
-.label{font-size:10.5px; text-transform:uppercase; letter-spacing:1.3px; color:var(--ink-soft); font-weight:900}
-.note{font-size:13px; color:var(--ink-soft)}
-.btn{font-family:var(--f-display); font-size:16px; letter-spacing:.3px; color:var(--ink); background:var(--paper-2); border:3px solid var(--ink); border-radius:13px; box-shadow:0 4px 0 var(--ink); padding:9px 14px 8px; cursor:pointer; line-height:1.15; transition:transform .06s, box-shadow .06s; touch-action:manipulation}
-.btn:active:not(:disabled){transform:translateY(3px); box-shadow:0 1px 0 var(--ink)}
-.btn.go{background:var(--go); color:var(--white); text-shadow:0 2px 0 var(--go-dark)}
-.btn.sky{background:var(--sky); color:var(--white); text-shadow:0 2px 0 var(--sky-dark)}
-.btn.gold{background:var(--gold)}
-.btn.small{font-size:13.5px; padding:6px 10px 5px; border-radius:10px}
+h1,h2,h3{margin:0; font-weight:800; letter-spacing:-.01em; text-wrap:balance}
+.page{max-width:560px; margin:0 auto; padding:calc(env(safe-area-inset-top,0px) + 22px) max(16px, env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 28px) max(16px, env(safe-area-inset-left,0px)); display:grid; gap:14px}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px; min-width:0}
+.muted{color:var(--muted)} .small{font-size:13px}
+.eyebrow{font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+.eyebrow.mine{color:var(--accent)}
+.btn{appearance:none; border:1px solid var(--line); background:var(--surface); color:var(--text); border-radius:11px; min-height:46px; padding:10px 14px; font-weight:700; cursor:pointer; touch-action:manipulation; text-align:center; line-height:1.2}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+.btn.good{background:var(--good); border-color:var(--good); color:#fff}
+.btn.quiet{background:var(--surface-2); border-color:transparent}
+.btn.link{background:transparent; border-color:transparent; color:var(--accent); min-height:36px; padding:6px 4px}
+.btn.sm{min-height:38px; padding:7px 12px; font-size:13.5px}
 .btn.block{width:100%}
-.btn:disabled{opacity:.42; cursor:not-allowed; box-shadow:0 2px 0 var(--ink)}
-.btn:focus-visible, .seg input:focus-visible + label, input:focus-visible{outline:3px solid var(--sky); outline-offset:2px}
-.seg{display:inline-flex; border:3px solid var(--ink); border-radius:12px; overflow:hidden; box-shadow:0 3px 0 var(--ink); background:var(--paper-2)}
-.seg input{position:absolute; opacity:0; pointer-events:none}
-.seg label{padding:6px 12px 5px; font-family:var(--f-display); font-size:15px; cursor:pointer; border-left:2px solid var(--ink)}
-.seg label:first-of-type{border-left:0}
-.seg input:checked + label{background:var(--sky); color:var(--white)}
+.btn:disabled{opacity:.38; cursor:not-allowed}
+.btn:active:not(:disabled){transform:scale(.98)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 .field{display:grid; gap:6px}
-.field input{font:inherit; font-weight:800; font-size:17px; padding:10px 12px; border:3px solid var(--ink); border-radius:12px; background:var(--white); color:var(--ink); width:100%}
-.stack{display:grid; gap:12px}
+.txt{width:100%; min-width:0; font-weight:700; font-size:17px; padding:12px 14px; border:1px solid var(--line); border-radius:11px; background:var(--surface-2); color:var(--text)}
+.seg{display:inline-flex; background:var(--surface-2); border-radius:11px; padding:3px; gap:2px; flex-wrap:wrap}
+.seg input{position:absolute; opacity:0; pointer-events:none}
+.seg label{padding:7px 12px; border-radius:9px; font-weight:700; font-size:14px; cursor:pointer; color:var(--muted)}
+.seg input:checked + label{background:var(--surface); color:var(--text); box-shadow:0 1px 2px rgba(0,0,0,.14)}
 .row{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
-
-/* Accueil */
-.hero{display:grid; justify-items:center; gap:8px; text-align:center; padding:8px 0 2px}
-.hero svg{width:84px; height:84px}
-.hero h1{font-size:34px; line-height:.95; color:var(--paper); text-shadow:0 3px 0 var(--ink), 0 0 1px var(--ink); -webkit-text-stroke:1.5px var(--ink)}
-.hero p{margin:0; color:var(--paper); font-weight:800}
-.ribbon-h{display:inline-block; background:var(--sky); color:var(--white); border:3px solid var(--ink); border-radius:10px; padding:3px 14px 2px; text-shadow:0 2px 0 var(--sky-dark); box-shadow:0 3px 0 var(--ink); font-size:22px}
-.steps{margin:0; padding-left:20px; display:grid; gap:6px; font-size:14px; font-weight:700}
-
-/* Salon */
-.seats{display:grid; gap:8px}
-.seat{display:flex; align-items:center; gap:10px; padding:8px 10px; background:var(--paper-2); border:2px solid var(--ink); border-radius:12px}
-.seat .nmx{flex:1; min-width:0; overflow-wrap:anywhere}
-.tag{font-size:11px; font-weight:900; border:2px solid var(--ink); border-radius:8px; padding:1px 6px; background:var(--paper); white-space:nowrap}
-.tag.warn{background:#ffd9d2; color:#8f2214}
-.tag.ok{background:#d7f3dc}
-.av{position:relative; width:34px; height:34px; border-radius:50%; border:3px solid var(--ink); display:grid; place-items:center; color:var(--white); font-family:var(--f-display); font-size:16px; background:var(--pc); flex:none}
-
-/* Appairage */
-.overlay{position:fixed; inset:0; background:rgba(40,22,10,.55); display:grid; place-items:center; padding:16px; padding-top:calc(var(--safe-t) + 16px); z-index:50; overflow:auto}
-.modal{width:min(440px, 100%); display:grid; gap:12px; justify-items:center; text-align:center}
+.stack{display:grid; gap:12px}
+.err{color:var(--warn); font-weight:700; margin:0}
+.brand{display:flex; align-items:center; gap:12px; padding:4px 2px}
+.brand svg{width:46px; height:46px; flex:none}
+.brand h1{font-size:23px; line-height:1.1}
+.av{width:26px; height:26px; border-radius:50%; background:var(--pc); color:#fff; display:grid; place-items:center; font-weight:800; font-size:12.5px; flex:none}
+.tag{display:inline-block; font-size:11px; font-weight:800; padding:2px 7px; border-radius:999px; background:var(--surface-2); color:var(--muted); white-space:nowrap}
+.tag.accent{background:color-mix(in srgb, var(--accent) 14%, transparent); color:var(--accent)}
+.tag.warn{background:color-mix(in srgb, var(--warn) 14%, transparent); color:var(--warn)}
+.tag.gold{background:color-mix(in srgb, var(--gold) 16%, transparent); color:var(--gold)}
+.tag.good{background:color-mix(in srgb, var(--good) 14%, transparent); color:var(--good)}
+.seat{display:flex; align-items:center; gap:10px; padding:10px 0; border-top:1px solid var(--line)}
+.seat:first-child{border-top:0; padding-top:2px}
+.seat .nm{flex:1; min-width:0; font-weight:700; overflow-wrap:anywhere}
 .code{display:flex; gap:8px; justify-content:center}
-.code b{width:58px; height:68px; display:grid; place-items:center; font-family:var(--f-display); font-weight:400; font-size:40px; background:var(--white); border:3px solid var(--ink); border-radius:12px; box-shadow:0 4px 0 var(--ink)}
-.codein{display:block; width:100%; min-width:0; box-sizing:border-box; font-family:var(--f-display); font-weight:400; font-size:38px; letter-spacing:14px; text-align:center; text-transform:uppercase; padding:8px 0 6px 14px; border:3px solid var(--ink); border-radius:12px; background:var(--white); color:var(--ink)}
-.err{color:#9a2414; font-weight:800; margin:0}
+.code b{width:54px; height:62px; display:grid; place-items:center; font-size:32px; font-weight:800; background:var(--surface-2); border-radius:11px}
+.codein{display:block; width:100%; min-width:0; font:800 32px/1 var(--f); letter-spacing:.42em; text-align:center; text-transform:uppercase; padding:15px 0 15px .42em; border:1px solid var(--line); border-radius:12px; background:var(--surface-2); color:var(--text)}
+.steps{margin:0; padding-left:18px; display:grid; gap:6px; font-size:14px}
+.rules p{margin:0 0 10px; font-size:14px}
+.rules b{font-weight:800}
 
-/* En jeu : en-tête */
-.hdr{position:sticky; top:calc(var(--safe-t) + 6px); z-index:20; display:grid; gap:8px; padding:8px 10px}
-.hdr .top{display:flex; align-items:center; gap:8px}
-.hdr .top h2{font-size:18px; flex:1; min-width:0}
-.chips{display:flex; flex-wrap:wrap; gap:6px}
-.chipinfo{display:inline-flex; align-items:center; gap:5px; padding:2px 9px; border:2px solid var(--ink); border-radius:999px; background:var(--paper-2); font-size:12px}
-.chipinfo.ok{background:#d7f3dc}
-.chipinfo.no{background:var(--paper-3); color:var(--ink-soft)}
-.crew{display:flex; gap:6px; overflow-x:auto; padding:6px 2px 2px; scrollbar-width:none}
+/* Écran de jeu */
+.shell{height:100vh; height:100dvh; display:grid; grid-template-columns:minmax(0,1fr); grid-template-rows:auto minmax(0,1fr) auto auto; grid-template-areas:"bar" "main" "sheet" "nav"; padding-top:env(safe-area-inset-top,0px); overflow:hidden}
+.bar{grid-area:bar; padding:10px max(14px, env(safe-area-inset-right,0px)) 9px max(14px, env(safe-area-inset-left,0px)); border-bottom:1px solid var(--line); display:grid; gap:8px; min-width:0}
+.bar .l1{display:flex; align-items:center; gap:10px; min-width:0}
+.status{flex:1; min-width:0; font-weight:800; font-size:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.status.mine{color:var(--accent)}
+.status small{font-weight:600; color:var(--muted); font-size:12.5px}
+.res{font-weight:800; font-variant-numeric:tabular-nums; white-space:nowrap}
+.iconbtn{width:38px; height:38px; display:grid; place-items:center; border-radius:10px; border:0; background:var(--surface-2); color:var(--text); cursor:pointer; flex:none}
+.iconbtn svg{width:20px; height:20px}
+.crew{display:flex; gap:6px; overflow-x:auto; scrollbar-width:none}
 .crew::-webkit-scrollbar{display:none}
-.mate{flex:1 0 62px; min-width:62px; display:grid; justify-items:center; gap:2px; padding:4px 3px 3px; border-radius:12px; border:2px solid transparent; position:relative}
-.mate.on{border-color:var(--ink); background:#fff3cf; box-shadow:0 0 0 2px var(--gold)}
-.mate.me .mn::after{content:" (vous)"; font-weight:700; color:var(--ink-soft)}
-.mate .mn{font-size:11px; font-weight:900; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.mate .ms{font-size:11.5px; font-variant-numeric:tabular-nums; white-space:nowrap}
-.mate .first{position:absolute; top:-6px; left:50%; transform:translateX(-50%); font-size:9px; background:var(--gold); border:2px solid var(--ink); border-radius:6px; padding:0 4px; font-weight:900; line-height:1.2}
-.mate.done{opacity:.55}
-.mate .sk{position:absolute; top:-4px; right:2px; font-size:11px}
+.mate{display:flex; align-items:center; gap:6px; padding:4px 10px 4px 4px; border-radius:999px; background:var(--surface-2); font-size:12.5px; font-weight:700; white-space:nowrap; border:1.5px solid transparent; flex:none}
+.mate .av{width:22px; height:22px; font-size:11px}
+.mate.on{border-color:var(--accent); background:var(--surface)}
+.mate.done{opacity:.5}
+.mate .k{color:var(--muted); font-weight:600; font-variant-numeric:tabular-nums}
+.main{grid-area:main; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; padding:14px max(14px, env(safe-area-inset-right,0px)) 18px max(14px, env(safe-area-inset-left,0px)); display:grid; gap:14px; align-content:start; min-width:0}
+.sheet{grid-area:sheet; background:var(--surface); border-top:1px solid var(--line); box-shadow:0 -8px 24px rgba(0,0,0,.06); padding:12px max(14px, env(safe-area-inset-right,0px)) 12px max(14px, env(safe-area-inset-left,0px)); max-height:46vh; max-height:46dvh; overflow-y:auto; display:grid; gap:10px; align-content:start; min-width:0}
+.sheet.mine{box-shadow:inset 0 3px 0 var(--accent), 0 -8px 24px rgba(0,0,0,.08)}
+.nav{grid-area:nav; display:grid; grid-template-columns:repeat(4,1fr); background:var(--surface); border-top:1px solid var(--line); padding:2px max(6px, env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 2px) max(6px, env(safe-area-inset-left,0px))}
+.tab{position:relative; display:grid; justify-items:center; align-content:center; gap:2px; background:none; border:0; color:var(--muted); font-size:11.5px; font-weight:700; padding:6px 0; cursor:pointer; min-height:52px}
+.tab svg{width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
+.tab.on{color:var(--accent)}
+.tab .badge{position:absolute; top:6px; left:calc(50% + 7px); width:9px; height:9px; border-radius:50%; background:var(--warn); border:2px solid var(--surface)}
+@media (orientation: landscape) and (max-height: 620px){
+  .shell{grid-template-columns:76px minmax(0,1fr) minmax(290px, 38%); grid-template-rows:auto minmax(0,1fr); grid-template-areas:"nav bar sheet" "nav main sheet"; padding-top:0}
+  .nav{grid-template-columns:1fr; grid-auto-rows:min-content; align-content:center; gap:4px; border-top:0; border-right:1px solid var(--line);
+       padding:calc(env(safe-area-inset-top,0px) + 6px) 4px calc(env(safe-area-inset-bottom,0px) + 6px) max(4px, env(safe-area-inset-left,0px))}
+  .bar{padding:calc(env(safe-area-inset-top,0px) + 8px) 14px 8px 14px}
+  .main{padding:12px 14px calc(env(safe-area-inset-bottom,0px) + 14px)}
+  .sheet{max-height:none; border-top:0; border-left:1px solid var(--line); box-shadow:none; padding:calc(env(safe-area-inset-top,0px) + 12px) max(14px, env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 12px) 14px}
+  .sheet.mine{box-shadow:inset 3px 0 0 var(--accent)}
+}
 
-/* Onglets */
-.tabbar{position:fixed; left:0; right:0; bottom:0; z-index:30; display:grid; grid-template-columns:repeat(4,1fr); gap:4px; padding:6px max(10px, env(safe-area-inset-left,0px)) calc(var(--safe-b) + 6px) max(10px, env(safe-area-inset-right,0px)); background:var(--table-dark); border-top:3px solid var(--ink)}
-.tab{position:relative; display:grid; justify-items:center; gap:1px; font-family:var(--f-display); font-size:13px; color:var(--paper); background:transparent; border:0; padding:4px 0 2px; cursor:pointer}
-.tab .ti{width:40px; height:40px; border-radius:50%; border:3px solid var(--ink); background:var(--paper-2); display:grid; place-items:center; font-size:19px; box-shadow:0 3px 0 var(--ink)}
-.tab.on .ti{background:var(--gold); transform:translateY(-3px)}
-.tab .dot{position:absolute; top:2px; right:calc(50% - 26px); width:14px; height:14px; border-radius:50%; background:var(--alert); border:2px solid var(--ink)}
-.sheet{position:fixed; left:0; right:0; bottom:calc(var(--safe-b) + 74px); z-index:25; padding:0 max(10px, env(safe-area-inset-left,0px)) 6px max(10px, env(safe-area-inset-right,0px)); pointer-events:none}
-.sheet .paper{pointer-events:auto; max-width:900px; margin:0 auto; max-height:44vh; overflow-y:auto; padding:10px 12px; display:grid; gap:8px; box-shadow:0 -2px 0 rgba(0,0,0,.08), 0 5px 0 var(--table-dark)}
-.sheet .paper.mine{box-shadow:0 0 0 4px var(--gold), 0 5px 0 var(--table-dark)}
-.sheet h3{font-size:19px}
-.sheet p{margin:0}
-.tray{display:flex; align-items:center; gap:8px}
-.die{width:40px; height:40px; background:var(--white); border:3px solid var(--ink); border-radius:11px; box-shadow:0 3px 0 var(--ink); display:grid; grid-template:repeat(3,1fr)/repeat(3,1fr); padding:5px; flex:none}
-.die i{width:7px; height:7px; border-radius:50%; background:var(--ink); place-self:center; visibility:hidden}
+/* Contenu */
+.sec{display:grid; gap:10px; min-width:0}
+.sec-h{display:flex; align-items:baseline; justify-content:space-between; gap:8px; flex-wrap:wrap}
+.sec-h h2{font-size:17px}
+.prog{height:6px; border-radius:999px; background:var(--surface-2); overflow:hidden}
+.prog i{display:block; height:100%; background:var(--gold); border-radius:999px; transition:width .4s}
+.stats{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:8px}
+.stat{background:var(--surface-2); border-radius:10px; padding:8px 10px; min-width:0}
+.stat b{display:block; font-size:19px; font-weight:800; font-variant-numeric:tabular-nums; line-height:1.15}
+.stat span{font-size:11px; color:var(--muted); font-weight:700}
+.cov{display:grid; grid-template-columns:repeat(11, minmax(0,1fr)); gap:4px}
+.cv{text-align:center; padding:5px 0 4px; border-radius:7px; background:var(--surface-2); color:var(--muted); font-size:13px; font-weight:800; font-variant-numeric:tabular-nums}
+.cv small{display:block; font-size:8.5px; font-weight:600; opacity:.85}
+.cv.on{background:var(--accent); color:var(--accent-ink)}
+.cv.used{background:transparent; box-shadow:inset 0 0 0 1.5px var(--line); text-decoration:line-through}
+.list{display:grid; gap:8px}
+.crd{display:grid; grid-template-columns:40px minmax(0,1fr) auto; gap:3px 12px; align-items:center; background:var(--surface); border:1px solid var(--line); border-radius:13px; padding:10px 12px 10px 10px; min-width:0}
+.crd.lit{border-color:var(--good); box-shadow:0 0 0 2px color-mix(in srgb, var(--good) 35%, transparent)}
+.crd.prem{border-color:color-mix(in srgb, var(--gold) 55%, var(--line))}
+.val{width:40px; height:40px; border-radius:10px; background:var(--vc); color:#fff; display:grid; place-items:center; font-weight:800; font-size:18px; grid-row:span 2; font-variant-numeric:tabular-nums}
+.crd .t{font-weight:800; font-size:14.5px; display:flex; flex-wrap:wrap; gap:3px 6px; align-items:center; min-width:0}
+.crd .e{font-size:13px; color:var(--muted); line-height:1.35; min-width:0}
+.crd .side{grid-row:span 2; display:grid; justify-items:end; gap:3px; text-align:right}
+.cost{font-weight:800; font-variant-numeric:tabular-nums; white-space:nowrap}
+.cost.free{color:var(--good)}
+.crd.mini{grid-template-columns:30px minmax(0,1fr); padding:7px 10px 7px 7px; gap:1px 10px; border-radius:11px}
+.crd.mini .val{width:30px; height:30px; font-size:14px; border-radius:8px}
+.crd.mini .t{font-size:13px}
+.crd.mini .e{font-size:12px}
+.opp{display:grid; gap:10px}
+.opp-h{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.opp-h h3{font-size:16px; flex:1; min-width:0}
+.log{display:grid; gap:5px; font-size:13.5px}
+.log .turn{margin-top:6px; padding-top:8px; border-top:1px solid var(--line); font-weight:800}
+.log .round{margin-top:8px; padding:6px 10px; border-radius:9px; background:var(--surface-2); font-weight:800}
+.log .sys{color:var(--muted)}
+.log .win{font-weight:800; color:var(--gold)}
+
+/* Panneau d'action */
+.tray{display:flex; align-items:center; gap:7px; min-width:0}
+.die{width:30px; height:30px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); display:grid; grid-template:repeat(3,1fr)/repeat(3,1fr); padding:4px; flex:none}
+.die i{width:5px; height:5px; border-radius:50%; background:var(--text); place-self:center; visibility:hidden}
 .die i.on{visibility:visible}
-.die.spin{animation:spin .4s linear infinite}
+.die.spin{animation:spin .45s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.sum{width:40px; height:40px; border-radius:50%; background:var(--coin); border:3px solid var(--ink); display:grid; place-items:center; font-family:var(--f-display); font-size:20px; flex:none}
-.tray .ex{font-size:12px; color:var(--ink-soft); flex:1; min-width:0}
-.opts{display:flex; flex-wrap:wrap; gap:8px}
-.opts.grid{display:grid; grid-template-columns:repeat(6,1fr)}
-.opts.col{display:grid}
-.opts.col .btn{text-align:left; font-family:var(--f-body); font-weight:800; font-size:13.5px}
-.opts .btn{flex:1 1 auto}
-.wait{display:flex; align-items:center; gap:10px; margin:0; font-weight:800}
-
-/* Contenu des onglets */
-.head{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px 12px; margin-bottom:10px}
-.stats{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:6px}
-.st{display:grid; gap:2px}
-.st .label{font-size:9.5px; letter-spacing:.6px}
-.st .v{display:flex; align-items:center; gap:5px; font-family:var(--f-display); font-size:19px; font-variant-numeric:tabular-nums}
-.ico{width:22px; height:22px; border-radius:6px; border:2px solid var(--ink); display:grid; place-items:center; font-size:12px; flex:none; background:var(--ic)}
-.prog{position:relative; height:22px; border:3px solid var(--ink); border-radius:999px; background:var(--paper-3); overflow:hidden; margin-top:8px}
-.prog i{position:absolute; inset:0 auto 0 0; background:linear-gradient(var(--gold), #e39a12); border-right:2px solid var(--ink); transition:width .4s}
-.prog span{position:relative; display:block; text-align:center; font-family:var(--f-display); font-size:14px; line-height:16px}
-.album{display:grid; grid-template-columns:repeat(11, minmax(0,1fr)); gap:3px; margin-top:6px}
-.tile{position:relative; text-align:center; padding:4px 0 3px; border-radius:8px; border:2px dashed var(--ink-soft); color:var(--ink-soft)}
-.tile b{display:block; font-family:var(--f-display); font-weight:400; font-size:16px; line-height:1}
-.tile small{font-size:8px; font-variant-numeric:tabular-nums}
-.tile.on{border:2px solid var(--ink); background:var(--gold); color:var(--ink)}
-.tile.used{background:var(--paper-3); border-style:solid; color:var(--ink-soft); text-decoration:line-through}
-.cards{display:grid; grid-template-columns:repeat(auto-fill, minmax(148px, 1fr)); gap:18px 14px; padding:8px 4px 4px 10px}
-.slot{display:grid; gap:9px}
-.slot .btn{font-size:14px; padding:7px 8px 6px}
-.card{position:relative; background:var(--frame); border:3px solid var(--frame); border-radius:15px; color:var(--white); box-shadow:0 0 0 2px var(--ink), 0 5px 0 rgba(0,0,0,.3); display:flex; flex-direction:column; gap:5px; padding:5px; margin-top:6px}
-.card .art{position:relative; height:80px; border-radius:10px; overflow:hidden; background:radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--vc) 45%, var(--white)) 0%, var(--vc) 75%)}
-.card .art svg{position:absolute; inset:0; width:100%; height:100%}
-.card .nm{position:absolute; top:5px; right:5px; left:30px; background:color-mix(in srgb, var(--vc) 78%, var(--frame)); border:2px solid var(--frame); border-radius:7px; padding:2px 6px 1px; font-family:var(--f-display); font-size:13.5px; line-height:1.1; text-align:right; text-shadow:0 1px 0 rgba(0,0,0,.45); z-index:1}
-.card .cost{position:absolute; top:-10px; left:-10px; width:34px; height:34px; border-radius:50%; background:var(--coin); border:3px solid var(--frame); box-shadow:0 0 0 2px var(--ink); color:var(--ink); display:grid; place-items:center; font-family:var(--f-display); font-size:18px; z-index:2}
-.card .cost.free{background:var(--go); color:var(--white)}
-.card .cost.base{background:var(--paper-3); font-size:14px}
-.card .hex{position:absolute; left:-11px; top:52px; width:34px; height:38px; clip-path:polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); background:var(--ink); display:grid; place-items:center; z-index:2}
-.card .hex b{width:27px; height:31px; clip-path:inherit; background:var(--paper); color:var(--ink); display:grid; place-items:center; font-family:var(--f-display); font-weight:400; font-size:17px}
-.card .badges{position:absolute; left:8px; right:6px; bottom:5px; display:flex; flex-wrap:wrap; gap:4px; justify-content:flex-end; z-index:1}
-.card .bd{font-size:9.5px; font-weight:900; text-transform:uppercase; padding:1px 6px; border-radius:999px; border:2px solid var(--frame); background:var(--white); color:var(--ink)}
-.card .bd.share{background:var(--v-rec); color:var(--white)}
-.card .bd.free{background:var(--go); color:var(--white)}
-.card .eff{background:var(--frame-2); border-radius:9px; padding:7px 8px; font-size:12.5px; line-height:1.3; min-height:60px; flex:1; margin:0}
-.card .foot{display:flex; justify-content:space-between; gap:6px; font-size:10.5px; font-weight:800; color:var(--frame-text); padding:0 4px 1px}
-.card.prem{background:linear-gradient(#ffd35a, var(--gold-dark)); border-color:var(--gold)}
-.card.prem .eff{background:var(--frame)}
-.card.prem .foot{color:var(--ink)}
-.card .stars{position:absolute; top:-14px; left:0; right:0; text-align:center; font-size:16px; color:var(--gold); -webkit-text-stroke:1.5px var(--ink); z-index:3; pointer-events:none}
-.card.lit{box-shadow:0 0 0 2px var(--ink), 0 0 0 6px var(--go), 0 0 22px rgba(76,194,106,.8)}
-.opp{display:grid; gap:8px}
-.who{display:flex; align-items:center; gap:10px}
-.who h3{font-size:19px; flex:1; min-width:0; overflow-wrap:anywhere}
-.minis{display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:5px}
-.mini{display:grid; grid-template-columns:28px minmax(0,1fr); gap:0 8px; align-items:center; background:var(--paper-2); border:2px solid var(--ink); border-radius:10px; padding:3px 7px 3px 3px}
-.mini.lit{background:#d4f5db; box-shadow:0 0 0 3px var(--go)}
-.mini.prem{background:#fde8b0}
-.hexs{width:26px; height:28px; clip-path:polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); background:var(--ink); display:grid; place-items:center; grid-row:span 2}
-.hexs b{width:20px; height:22px; clip-path:inherit; background:var(--vc); color:var(--white); display:grid; place-items:center; font-family:var(--f-display); font-weight:400; font-size:13px}
-.mini .mn2{font-weight:900; font-size:12.5px}
-.mini .mt{font-size:11.5px; color:var(--ink-soft); line-height:1.25}
-.pill{display:inline-block; font-size:9.5px; font-weight:900; text-transform:uppercase; padding:1px 6px; border-radius:999px; background:var(--v-rec); color:var(--white); margin-left:4px; vertical-align:1px}
-.log{display:grid; gap:4px; font-size:13.5px}
-.log .turn{margin-top:7px; padding-top:7px; border-top:2px dashed var(--paper-3); font-family:var(--f-display); font-weight:400; font-size:15px}
-.log .round{margin-top:8px; padding:4px 8px; border-radius:8px; background:var(--paper-2); border:2px solid var(--ink); font-family:var(--f-display); font-weight:400}
-.log .sys{color:var(--ink-soft); font-style:italic}
-.log .win{font-family:var(--f-display); font-weight:400; font-size:17px; color:var(--gold-dark)}
-.rank{display:grid; gap:6px; margin:4px 0; padding:0; list-style:none}
-.rank li{display:flex; align-items:center; gap:8px; padding:5px 8px 5px 5px; background:var(--paper-2); border:2px solid var(--ink); border-radius:10px; font-size:13px}
-.rank .rk{font-family:var(--f-display); font-size:17px; width:18px; text-align:center}
-.rank .grow{flex:1; min-width:0}
-.rules p{margin:0 0 8px; font-size:14px}
-.rules b{font-family:var(--f-display); font-weight:400; font-size:15px}
-@media (min-width:700px){ .opts.grid{grid-template-columns:repeat(12,1fr)} .album{gap:6px} .tile small{font-size:10px} }
+.sum{font-weight:800; font-size:20px; min-width:26px; text-align:center; font-variant-numeric:tabular-nums}
+.tray .ex{flex:1; min-width:0; font-size:12.5px; color:var(--muted); text-align:right}
+.ask{display:grid; gap:4px}
+.ask h3{font-size:17px}
+.ask p{margin:0; color:var(--muted); font-size:14px}
+.opts{display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:8px}
+.opts.grid{grid-template-columns:repeat(6, 1fr)}
+.opts.grid .btn{padding:8px 0; min-height:44px}
+.opts.col{grid-template-columns:1fr}
+.opts.col .btn{text-align:left; font-weight:600; font-size:13.5px}
+.wait{display:flex; align-items:center; gap:8px; margin:0; font-weight:700; color:var(--muted); font-size:14px}
+.rank{display:grid; gap:6px; margin:0; padding:0; list-style:none}
+.rank li{display:flex; align-items:center; gap:10px; padding:8px 10px; background:var(--surface-2); border-radius:10px; font-size:14px}
+.rank .g{flex:1; min-width:0; font-weight:700}
+.overlay{position:fixed; inset:0; background:rgba(0,0,0,.45); display:grid; place-items:center; padding:16px; z-index:50}
+.modal{width:min(420px, 100%); display:grid; gap:12px; max-height:90dvh; overflow:auto}
+@media (orientation: landscape) and (max-height: 620px){ .opts.grid{grid-template-columns:repeat(6, 1fr)} }
+@media (min-width: 700px) and (orientation: portrait){ .opts.grid{grid-template-columns:repeat(12, 1fr)} }
 @media (prefers-reduced-motion: reduce){ *{animation:none!important; transition:none!important} }
 </style>
 </head>
 <body>
-<div class="wrap" id="root"></div>
-<div class="sheet" id="sheet" hidden></div>
-<nav class="tabbar" id="tabbar" hidden aria-label="Onglets"></nav>
+<div id="app" class="page"></div>
 <div class="overlay" id="overlay" hidden></div>
 
 <script>/*! PeerJS 1.5.4 — licence MIT — peerjs.com */
@@ -217,7 +197,7 @@ h1,h2,h3{font-family:var(--f-display); font-weight:400; margin:0; letter-spacing
 </script>
 <script>
 "use strict";
-const VERSION = "v25-app2";
+const VERSION = "v25-app3";
 const CARDS = [{"n": "Rouage I", "v": "Ingénierie", "d": 3, "c": 2, "e": "Gagnez 7🪙", "p": false, "s": false, "V": 7, "ops": [["c", 7]]}, {"n": "Rouage II", "v": "Ingénierie", "d": 6, "c": 2, "e": "Gagnez 4🪙", "p": false, "s": false, "V": 3, "ops": [["c", 4]]}, {"n": "Rouage III", "v": "Ingénierie", "d": 8, "c": 3, "e": "Gagnez 5🪙", "p": false, "s": false, "V": 4, "ops": [["c", 5]]}, {"n": "Rouage IV", "v": "Ingénierie", "d": 10, "c": 3, "e": "Gagnez 8🪙", "p": false, "s": false, "V": 8, "ops": [["c", 8]]}, {"n": "Convertisseur I", "v": "Ingénierie", "d": 4, "c": 3, "e": "Vous pouvez convertir 2🪙 en 1👑", "p": false, "s": false, "V": 8, "ops": [["conv", 2, 1]]}, {"n": "Convertisseur II", "v": "Ingénierie", "d": 7, "c": 6, "e": "Vous pouvez convertir 3🪙 en 1👑", "p": false, "s": false, "V": 7, "ops": [["conv", 3, 1]]}, {"n": "Convertisseur III", "v": "Ingénierie", "d": 11, "c": 4, "e": "Vous pouvez convertir 2🪙 en 1👑, deux fois", "p": false, "s": false, "V": 16, "ops": [["conv", 2, 2]]}, {"n": "Miroir I", "v": "Ingénierie", "d": 5, "c": 3, "e": "Copiez l'effet d'une de vos cartes de valeur 4 ou 6", "p": false, "s": false, "V": 5, "ops": [["copy_own"]]}, {"n": "Miroir II", "v": "Ingénierie", "d": 9, "c": 3, "e": "Copiez l'effet d'une carte adverse de valeur 8 ou 10", "p": false, "s": false, "V": 6, "ops": [["copy_adv"]]}, {"n": "Flammèche I", "v": "Flammes", "d": 3, "c": 2, "e": "Ciblez 1 adversaire : il vous paie 4🪙 ou passe son tour", "p": false, "s": false, "V": 6, "ops": [["pay_me", 4]]}, {"n": "Flammèche II", "v": "Flammes", "d": 6, "c": 1, "e": "Ciblez 1 adversaire : il vous paie 2🪙 ou passe son tour", "p": false, "s": false, "V": 2, "ops": [["pay_me", 2]]}, {"n": "Brasier", "v": "Flammes", "d": 9, "c": 2, "e": "Ciblez 1 adversaire : il vous paie 4🪙 ou passe son tour", "p": false, "s": false, "V": 4, "ops": [["pay_me", 4]]}, {"n": "Tison I", "v": "Flammes", "d": 4, "c": 1, "e": "Chaque adversaire vous paie 1🪙", "p": false, "s": false, "V": 3, "ops": [["all_pay", 1]]}, {"n": "Tison II", "v": "Flammes", "d": 7, "c": 3, "e": "Chaque adversaire vous paie 1🪙", "p": false, "s": false, "V": 3, "ops": [["all_pay", 1]]}, {"n": "Mur de Feu", "v": "Flammes", "d": 11, "c": 2, "e": "Chaque adversaire vous paie 2🪙", "p": false, "s": false, "V": 6, "ops": [["all_pay", 2]]}, {"n": "Embrasement I", "v": "Flammes", "d": 5, "c": 2, "e": "Chaque adversaire ayant 6🪙 ou plus vous paie 3🪙", "p": false, "s": false, "V": 3, "ops": [["all_rich", 3, 6]]}, {"n": "Embrasement II", "v": "Flammes", "d": 8, "c": 3, "e": "Chaque adversaire ayant 6🪙 ou plus vous paie 4🪙", "p": false, "s": false, "V": 4, "ops": [["all_rich", 4, 6]]}, {"n": "Fournaise", "v": "Flammes", "d": 12, "c": 1, "e": "Chaque adversaire vous paie 3🪙 ou passe son tour", "p": false, "s": false, "V": 9, "ops": [["all_pass", 3]]}, {"n": "Mousse I", "v": "Récifs", "d": 2, "c": 1, "e": "Tous les lancers : Gagnez 3🪙", "p": false, "s": true, "V": 9, "ops": [["c", 3]]}, {"n": "Mousse II", "v": "Récifs", "d": 7, "c": 3, "e": "Tous les lancers : Gagnez 1🪙", "p": false, "s": true, "V": 3, "ops": [["c", 1]]}, {"n": "Fougère", "v": "Récifs", "d": 10, "c": 3, "e": "Tous les lancers : Gagnez 2🪙", "p": false, "s": true, "V": 6, "ops": [["c", 2]]}, {"n": "Racine I", "v": "Récifs", "d": 4, "c": 4, "e": "Gagnez 1👑", "p": false, "s": false, "V": 10, "ops": [["k", 1]]}, {"n": "Racine II", "v": "Récifs", "d": 9, "c": 6, "e": "Gagnez 1👑", "p": false, "s": false, "V": 10, "ops": [["k", 1]]}, {"n": "Canopée", "v": "Récifs", "d": 12, "c": 3, "e": "Gagnez 2👑", "p": false, "s": false, "V": 20, "ops": [["k", 2]]}, {"n": "Bourgeon I", "v": "Récifs", "d": 3, "c": 3, "e": "Gagnez 2🪙 et 1👑", "p": false, "s": false, "V": 12, "ops": [["c", 2], ["k", 1]]}, {"n": "Bourgeon II", "v": "Récifs", "d": 6, "c": 3, "e": "Gagnez 1🪙. Si vous avez 3 cartes Récifs, gagnez 1👑", "p": false, "s": false, "V": 4.5, "ops": [["c", 1], ["recifs"]]}, {"n": "Ancrage", "v": "Récifs", "d": 11, "c": 4, "e": "Gagnez 3🪙 et 1👑", "p": false, "s": false, "V": 13, "ops": [["c", 3], ["k", 1]]}, {"n": "Lueur I", "v": "Lumière", "d": 3, "c": 3, "e": "Gagnez 1👑", "p": false, "s": false, "V": 10, "ops": [["k", 1]]}, {"n": "Lueur II", "v": "Lumière", "d": 8, "c": 3, "e": "Gagnez 4🪙", "p": false, "s": false, "V": 4, "ops": [["c", 4]]}, {"n": "Éclat", "v": "Lumière", "d": 11, "c": 6, "e": "Gagnez 2👑", "p": false, "s": false, "V": 20, "ops": [["k", 2]]}, {"n": "Halo I", "v": "Lumière", "d": 4, "c": 2, "e": "Gagnez 5🪙", "p": false, "s": false, "V": 5, "ops": [["c", 5]]}, {"n": "Halo II", "v": "Lumière", "d": 6, "c": 2, "e": "Gagnez 3🪙", "p": false, "s": false, "V": 3, "ops": [["c", 3]]}, {"n": "Soleil", "v": "Lumière", "d": 10, "c": 3, "e": "Gagnez 8🪙", "p": false, "s": false, "V": 8, "ops": [["c", 8]]}, {"n": "Aube I", "v": "Lumière", "d": 5, "c": 5, "e": "Si vous avez 5🪙 ou moins, gagnez 1👑. Puis gagnez 1🪙", "p": false, "s": false, "V": 9.5, "ops": [["ifle5k", 1], ["c", 1]]}, {"n": "Aube II", "v": "Lumière", "d": 9, "c": 6, "e": "Gagnez 1👑. Si ≤5🪙, gagnez 2🪙 de plus", "p": false, "s": false, "V": 12, "ops": [["k", 1], ["ifle5c", 2]]}, {"n": "Ascension", "v": "Lumière", "d": 12, "c": 3, "e": "Gagnez 2👑. Si ≥9🪙, gagnez 1👑 de plus", "p": false, "s": false, "V": 24.5, "ops": [["k", 2], ["ifge9k", 1]]}, {"n": "Ombre I", "v": "Abysses", "d": 3, "c": 2, "e": "Prenez 4🪙 à un adversaire", "p": false, "s": false, "V": 6, "ops": [["tc", 4]]}, {"n": "Ombre II", "v": "Abysses", "d": 6, "c": 2, "e": "Prenez 3🪙 à un adversaire", "p": false, "s": false, "V": 3, "ops": [["tc", 3]]}, {"n": "Néant", "v": "Abysses", "d": 9, "c": 3, "e": "Prenez 5🪙 à un adversaire", "p": false, "s": false, "V": 6, "ops": [["tc", 5]]}, {"n": "Larcin I", "v": "Abysses", "d": 4, "c": 3, "e": "Prenez 4🪙 à un adversaire. S'il a plus de 👑 que vous, prenez 3🪙 de plus", "p": false, "s": false, "V": 6, "ops": [["tcb", 4, 3]]}, {"n": "Larcin II", "v": "Abysses", "d": 10, "c": 3, "e": "Prenez 4🪙 à un adversaire. S'il a plus de 👑 que vous, prenez 3🪙 de plus", "p": false, "s": false, "V": 6, "ops": [["tcb", 4, 3]]}, {"n": "Grand Larcin", "v": "Abysses", "d": 12, "c": 1, "e": "Prenez la moitié des 🪙 de chaque adversaire (arrondi inférieur)", "p": false, "s": false, "V": 9, "ops": [["half_all"]]}, {"n": "Pillage I", "v": "Abysses", "d": 5, "c": 3, "e": "Prenez 5🪙 à l'adversaire le plus riche", "p": false, "s": false, "V": 5, "ops": [["tc_rich", 5]]}, {"n": "Pillage II", "v": "Abysses", "d": 8, "c": 3, "e": "Prenez 5🪙 à l'adversaire le plus riche", "p": false, "s": false, "V": 5, "ops": [["tc_rich", 5]]}, {"n": "Malfaisance", "v": "Abysses", "d": 11, "c": 2, "e": "Prenez 6🪙 à un adversaire", "p": false, "s": false, "V": 8, "ops": [["tc", 6]]}, {"n": "Brise I", "v": "Courants", "d": 2, "c": 1, "e": "Choisissez le résultat des 🎲. Gagnez 2🪙", "p": false, "s": false, "V": 8, "ops": [["choose"], ["c", 2]]}, {"n": "Brise II", "v": "Courants", "d": 5, "c": 2, "e": "Relancez 1 🎲 de votre choix. Gagnez 2🪙", "p": false, "s": false, "V": 4, "ops": [["reroll1"], ["c", 2]]}, {"n": "Rafale", "v": "Courants", "d": 8, "c": 1, "e": "Relancez 1 🎲 de votre choix", "p": false, "s": false, "V": 2, "ops": [["reroll1"]]}, {"n": "Bourrasque", "v": "Courants", "d": 10, "c": 2, "e": "Relancez les 2 🎲. Gagnez 2🪙", "p": false, "s": false, "V": 5, "ops": [["reroll2"], ["c", 2]]}, {"n": "Tempête", "v": "Courants", "d": 12, "c": 1, "e": "Choisissez le résultat des 🎲. Gagnez 4🪙", "p": false, "s": false, "V": 10, "ops": [["choose"], ["c", 4]]}, {"n": "Courant I", "v": "Courants", "d": 3, "c": 2, "e": "Ajoutez ou retirez 1 au total des 🎲. Gagnez 3🪙", "p": false, "s": false, "V": 6, "ops": [["adj", 1], ["c", 3]]}, {"n": "Courant II", "v": "Courants", "d": 6, "c": 2, "e": "Ajoutez ou retirez 1 au total des 🎲", "p": false, "s": false, "V": 3, "ops": [["adj", 1]]}, {"n": "Marée I", "v": "Courants", "d": 7, "c": 3, "e": "Ajoutez ou retirez 2 au total des 🎲", "p": false, "s": false, "V": 4, "ops": [["adj", 2]]}, {"n": "Marée II", "v": "Courants", "d": 11, "c": 2, "e": "Ajoutez ou retirez 2 au total des 🎲. Gagnez 3🪙", "p": false, "s": false, "V": 7, "ops": [["adj", 2], ["c", 3]]}, {"n": "Grand Rouage", "v": "Ingénierie", "d": 7, "c": 6, "e": "Gagnez 5🪙. Vous pouvez convertir 3🪙 en 1👑", "p": true, "s": false, "V": 12, "ops": [["c", 5], ["conv", 3, 1]]}, {"n": "Nexus", "v": "Ingénierie", "d": 9, "c": 4, "e": "Gagnez 4🪙. Vous pouvez convertir 2🪙 en 1👑", "p": true, "s": false, "V": 12, "ops": [["c", 4], ["conv", 2, 1]]}, {"n": "Grand Miroir", "v": "Ingénierie", "d": 11, "c": 2, "e": "Copiez l'effet d'une carte adverse ET d'une de vos cartes, de valeur 10 ou 12", "p": true, "s": false, "V": 11, "ops": [["copy_adv"], ["copy_own"]]}, {"n": "Brasier Royal", "v": "Flammes", "d": 6, "c": 6, "e": "Chaque adversaire ayant 6🪙 ou plus vous paie 4🪙. Gagnez 1👑", "p": true, "s": false, "V": 16, "ops": [["all_rich", 4, 6], ["k", 1]]}, {"n": "Fournaise Royale", "v": "Flammes", "d": 10, "c": 4, "e": "Chaque adversaire vous paie 2🪙 ou passe son tour. Gagnez 1👑", "p": true, "s": false, "V": 16, "ops": [["all_pass", 2], ["k", 1]]}, {"n": "Forêt Ancienne", "v": "Récifs", "d": 8, "c": 6, "e": "Gagnez 4🪙 et 1👑", "p": true, "s": false, "V": 14, "ops": [["c", 4], ["k", 1]]}, {"n": "Arbre Monde", "v": "Récifs", "d": 12, "c": 3, "e": "Gagnez 5🪙 et 3👑", "p": true, "s": false, "V": 35, "ops": [["c", 5], ["k", 3]]}, {"n": "Soleil Royal", "v": "Lumière", "d": 7, "c": 6, "e": "Gagnez 3🪙 et 1👑", "p": true, "s": false, "V": 13, "ops": [["c", 3], ["k", 1]]}, {"n": "Ascension Royale", "v": "Lumière", "d": 11, "c": 6, "e": "Gagnez 3👑. Si ≥9🪙, gagnez 1👑 de plus", "p": true, "s": false, "V": 34.5, "ops": [["k", 3], ["ifge9k", 1]]}, {"n": "Abîme", "v": "Abysses", "d": 6, "c": 4, "e": "Prenez 4🪙 à un adversaire. Gagnez 1👑", "p": true, "s": false, "V": 9, "ops": [["tc", 4], ["k", 1]]}, {"n": "Néant Royal", "v": "Abysses", "d": 10, "c": 5, "e": "Prenez 3🪙 à chaque adversaire. Gagnez 1👑", "p": true, "s": false, "V": 19, "ops": [["all_pay", 3], ["k", 1]]}, {"n": "Œil du Cyclone", "v": "Courants", "d": 7, "c": 3, "e": "Ajoutez ou retirez 2 au total des 🎲. Gagnez 2🪙", "p": true, "s": false, "V": 7, "ops": [["adj", 2], ["c", 2]]}, {"n": "Maelström", "v": "Courants", "d": 11, "c": 2, "e": "Choisissez le résultat des 🎲. Gagnez 4🪙", "p": true, "s": false, "V": 10, "ops": [["choose"], ["c", 4]]}];
 const BASE = {"n": "Carte de Base", "v": "Starter", "d": 7, "c": 0, "e": "Tous les lancers : Gagnez 2🪙", "p": false, "s": true, "V": 6, "ops": [["c", 2]]};
 const PROB = {2:1,3:2,4:3,5:4,6:5,7:6,8:5,9:4,10:3,11:2,12:1};
@@ -242,23 +222,6 @@ function shuffle(a){ for (let i = a.length - 1; i > 0; i--){ const j = Math.floo
 const store = { get(k, d){ try { const v = localStorage.getItem(k); return v === null ? d : v; } catch(e){ return d; } }, set(k, v){ try { localStorage.setItem(k, v); } catch(e){} } };
 const cleanName = s => String(s || '').replace(/[\u0000-\u001f\u007f-\u009f​-‏‪-‮⁠-⁯]/g, '').trim().slice(0, 16);
 
-/* ---------- Illustrations par Voie ---------- */
-const O = '#2f2342';
-function dbl(d, col, w=6){ return `<path d="${d}" fill="none" stroke="${O}" stroke-width="${w+5}" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`; }
-const ART = {
-  "Ingénierie": () => { let t=''; for(let i=0;i<8;i++) t+=`<rect x="-5.5" y="-27" width="11" height="12" rx="2.5" transform="rotate(${i*45})"/>`;
-    return `<g transform="translate(80 46)" fill="#ffd9a8" stroke="${O}" stroke-width="3">${t}<circle r="19"/><circle r="7" fill="${O}"/></g><g transform="translate(40 30) scale(.55)" fill="#ffe9c9" stroke="${O}" stroke-width="5">${t}<circle r="19"/><circle r="7" fill="${O}"/></g>`; },
-  "Flammes": () => `<path d="M80 10 C94 26 104 36 99 52 C95 64 87 70 79 70 C68 70 58 62 58 50 C58 38 68 33 70 22 C75 32 80 34 80 42 C86 34 84 22 80 10 Z" fill="#ffb02e" stroke="${O}" stroke-width="3.5" stroke-linejoin="round"/><path d="M79 38 C86 46 90 52 87 60 C85 65 82 67 79 67 C74 67 70 63 70 58 C70 52 75 49 79 38 Z" fill="#fff2a8" stroke="${O}" stroke-width="3" stroke-linejoin="round"/><circle cx="38" cy="58" r="5" fill="#ffb02e" stroke="${O}" stroke-width="3"/><circle cx="120" cy="30" r="4" fill="#ffb02e" stroke="${O}" stroke-width="3"/>`,
-  "Récifs": () => dbl('M78 84 L78 52 M78 62 L62 44 M78 56 L94 38 M62 44 L58 28 M62 44 L50 40 M94 38 L102 24 M94 38 L108 42','#ff7fa6',6) + dbl('M36 84 C30 70 44 62 36 48 C30 38 40 30 36 22','#6fe0a8',5) + dbl('M124 84 C130 72 118 64 124 52','#6fe0a8',5),
-  "Lumière": () => { let r=''; for(let i=0;i<8;i++){ const a=i*Math.PI/4, x1=80+Math.cos(a)*26, y1=44+Math.sin(a)*26, x2=80+Math.cos(a)*36, y2=44+Math.sin(a)*36; r+=dbl(`M${x1.toFixed(1)} ${y1.toFixed(1)} L${x2.toFixed(1)} ${y2.toFixed(1)}`,'#fff3b0',4);}
-    return r+`<circle cx="80" cy="44" r="20" fill="#fff3b0" stroke="${O}" stroke-width="3.5"/><circle cx="73" cy="41" r="2.6" fill="${O}"/><circle cx="87" cy="41" r="2.6" fill="${O}"/><path d="M73 49 Q80 55 87 49" fill="none" stroke="${O}" stroke-width="3" stroke-linecap="round"/>`; },
-  "Abysses": () => dbl('M52 84 C48 70 60 68 56 56 M108 84 C112 70 100 68 104 56 M80 84 L80 64','#c7a6ff',6) + `<ellipse cx="80" cy="44" rx="30" ry="24" fill="#c7a6ff" stroke="${O}" stroke-width="3.5"/><ellipse cx="80" cy="42" rx="17" ry="13" fill="#fff" stroke="${O}" stroke-width="3"/><circle cx="82" cy="42" r="7.5" fill="#f2b705" stroke="${O}" stroke-width="2.5"/><ellipse cx="82" cy="42" rx="2.4" ry="6" fill="${O}"/>`,
-  "Courants": () => dbl('M8 62 Q24 44 40 62 T72 62 T104 62 T136 62 T168 62','#e6f6ff',6) + dbl('M90 40 C90 26 110 24 112 36 C114 46 100 48 98 40','#e6f6ff',5) + dbl('M30 34 Q42 26 54 34','#e6f6ff',4),
-  "Starter": () => dbl('M80 18 L80 70 M66 30 L94 30 M56 54 C60 68 70 72 80 72 C90 72 100 68 104 54','#fdf1d6',6) + `<circle cx="80" cy="16" r="7" fill="#fdf1d6" stroke="${O}" stroke-width="3"/>`
-};
-const artCache = {};
-const art = v => artCache[v] || (artCache[v] = `<svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${ART[v]()}</svg>`);
-const EMBLEM = `<svg viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="27" fill="#3597ea" stroke="#3b2314" stroke-width="4"/><path d="M30 13v30M21 20h18M17 35c2 8 8 11 13 11s11-3 13-11" fill="none" stroke="#3b2314" stroke-width="9" stroke-linecap="round"/><path d="M30 13v30M21 20h18M17 35c2 8 8 11 13 11s11-3 13-11" fill="none" stroke="#fdf1d6" stroke-width="4.5" stroke-linecap="round"/><circle cx="30" cy="12" r="5" fill="#fdf1d6" stroke="#3b2314" stroke-width="3"/></svg>`;
 
 /* =====================================================================
    ÉTAT GLOBAL
@@ -615,7 +578,7 @@ function seatLost(seatObj, why){
 function vmFor(seat){
   if (!G) return {v:VERSION, phase:'lobby', me:seat, goal:LOBBY.goal, code:LOBBY.code, codeState:LOBBY.codeState || 'none', codeErr:LOBBY.codeErr || '', seats:LOBBY.seats.map(s => ({n:s.name, kind:s.kind}))};
   const pr = pending && pending.seat === seat ? pending.spec : null;
-  return {v:VERSION, phase:'game', me:seat, goal:G.o.goal, rate:G.o.rate, round:G.round, pos:G.pos,
+  return {v:VERSION, phase:'game', me:seat, code:LOBBY ? LOBBY.code : null, goal:G.o.goal, rate:G.o.rate, round:G.round, pos:G.pos,
     order:G.order.map(seatOf), active:seatOf(G.active), free:G.freeAvail, deck:G.deck.length, refreshed:G.refreshed,
     market:G.market.map(c => [c.k, c.uid]), dice:G.dice, rolling:G.rolling, used:G.used, lit:[...G.lit],
     log:G.log.slice(-70), winner: G.winner ? seatOf(G.winner) : -1, waiting: pending ? pending.seat : -1,
@@ -786,85 +749,87 @@ function fmt(text, names){
   return esc(text).replace(/\u0001(\d+)\u0002/g, (_, i) => { const n = names[+i]; return n ? `<b style="color:${SEAT_COL[+i]}">${esc(n)}</b>` : '?'; });
 }
 const effOf = c => c.s ? c.e.replace(/^Tous les lancers : /, '') : c.e;
-function cardHTML(k, uidv, opt = {}){
-  const c = def(k), lit = VM.lit && VM.lit.includes(uidv);
-  const costCls = opt.free ? 'free' : (c.c ? '' : 'base');
-  return `<article class="card ${c.p ? 'prem' : ''} ${lit ? 'lit' : ''}" style="--vc:${VC[c.v]}">
-    ${c.p ? '<div class="stars" aria-label="Premium">★★★</div>' : ''}
-    <div class="cost ${costCls}" title="Coût">${opt.free ? '0' : (c.c || '–')}</div>
-    <div class="art">${art(c.v)}<div class="nm">${esc(c.n)}</div>
-      <div class="badges">${opt.free ? '<span class="bd free">Gratuite</span>' : ''}${c.s ? '<span class="bd share">Tous les lancers</span>' : ''}</div></div>
-    <div class="hex" title="Valeur de dé"><b>${c.d}</b></div>
-    <p class="eff">${esc(effOf(c))}</p>
-    <div class="foot"><span>${esc(c.v)}</span><span>🎲 ${pct(c.d)}</span></div>
-  </article>`;
-}
-function miniHTML(k, uidv){
-  const c = def(k), lit = VM.lit && VM.lit.includes(uidv);
-  return `<div class="mini ${c.p ? 'prem' : ''} ${lit ? 'lit' : ''}" style="--vc:${VC[c.v]}">
-    <span class="hexs"><b>${c.d}</b></span><span class="mn2">${c.p ? '★ ' : ''}${esc(c.n)}${c.s ? '<span class="pill">tous</span>' : ''}</span>
-    <span class="mt">${esc(effOf(c))}</span></div>`;
-}
+const ICON = {
+  navire:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2"/><path d="M12 7v14M8 10h8M5 14c0 4 3.2 7 7 7s7-3 7-7"/></svg>',
+  marche:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 9h15l-1.3 11H5.8z"/><path d="M8.5 9V7.5a3.5 3.5 0 0 1 7 0V9"/></svg>',
+  equipage:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M15.8 14.2c2.9.3 5.2 2.7 5.2 5.8"/></svg>',
+  journal:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg>',
+  menu:'<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>'
+};
+const EMBLEM = `<svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="var(--accent)"/><g fill="none" stroke="var(--accent-ink)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="12" r="3.2"/><path d="M24 15.5V37M17 21h14M12.5 28.5c1.5 6 6 9 11.5 9s10-3 11.5-9"/></g></svg>`;
 const avHTML = (name, i) => `<span class="av" style="--pc:${SEAT_COL[i]}">${esc((name || '?')[0].toUpperCase())}</span>`;
 const chanceOf = cards => Math.round([...new Set(cards.map(([k]) => def(k).d))].reduce((t, v) => t + PROB[v], 0) * 100);
+function crdHTML(k, u, opt = {}){
+  const c = def(k), lit = VM.lit && VM.lit.includes(u);
+  const tags = (c.p ? '<span class="tag gold">★ premium</span>' : '') + (c.s ? '<span class="tag accent">tous les lancers</span>' : '') + (opt.free ? '<span class="tag good">gratuite</span>' : '');
+  if (opt.mini) return `<div class="crd mini ${c.p ? 'prem' : ''} ${lit ? 'lit' : ''}" style="--vc:${VC[c.v]}"><span class="val">${c.d}</span><span class="t">${esc(c.n)} ${tags}</span><span class="e">${esc(effOf(c))}</span></div>`;
+  const side = opt.buy || `<span class="cost ${opt.free ? 'free' : ''}">${opt.free ? 'gratuite' : (c.c ? c.c + ' 🪙' : 'départ')}</span>`;
+  return `<div class="crd ${c.p ? 'prem' : ''} ${lit ? 'lit' : ''}" style="--vc:${VC[c.v]}">
+    <span class="val" title="Valeur de dé">${c.d}</span><span class="t">${esc(c.n)} ${tags}</span>
+    <span class="side">${side}<span class="small muted">${esc(c.v)} · ${pct(c.d)}</span></span>
+    <span class="e">${esc(effOf(c))}</span></div>`;
+}
+const progHTML = (k, goal) => `<div class="prog" role="img" aria-label="${k} sur ${goal} couronnes"><i style="width:${Math.min(100, k / goal * 100)}%"></i></div>`;
 function statsHTML(p){
   const normals = p.cards.filter(([k]) => !def(k).p).length;
   return `<div class="stats">
-    <div class="st"><span class="label">Pièces</span><span class="v"><span class="ico" style="--ic:#ffd36b">🪙</span>${p.c}</span></div>
-    <div class="st"><span class="label">Couronnes</span><span class="v"><span class="ico" style="--ic:#ffe9a3">👑</span>${p.k}</span></div>
-    <div class="st"><span class="label">Navire</span><span class="v"><span class="ico" style="--ic:#bfe0ff">⚓</span>${normals}/6</span></div>
-    <div class="st"><span class="label">Activation</span><span class="v"><span class="ico" style="--ic:#c9f1d3">🎲</span>${chanceOf(p.cards)}%</span></div></div>`;
+    <div class="stat"><b>${p.c} 🪙</b><span>pièces</span></div>
+    <div class="stat"><b>${p.k} 👑</b><span>couronnes</span></div>
+    <div class="stat"><b>${normals}/6</b><span>cartes</span></div>
+    <div class="stat"><b>${chanceOf(p.cards)} %</b><span>activation</span></div></div>`;
 }
-const progHTML = (p, goal) => `<div class="prog" role="img" aria-label="${p.k} sur ${goal} couronnes"><i style="width:${Math.min(100, p.k / goal * 100)}%"></i><span>${p.k}/${goal}👑</span></div>`;
 
+let lastShell = false;
 function render(){
-  const root = $('#root');
-  document.body.classList.toggle('ingame', UI.screen === 'play' && VM && VM.phase === 'game');
-  $('#sheet').hidden = $('#tabbar').hidden = !(UI.screen === 'play' && VM && VM.phase === 'game');
-  if (UI.screen === 'home') return renderHome(root);
-  if (UI.screen === 'join' || UI.screen === 'joining') return renderJoin(root);
-  if (UI.screen === 'wait') { root.innerHTML = `<section class="paper stack"><h2>Connecté à la partie ${esc(UI.code || '')} !</h2><p class="note">En attente des informations de l'hôte…</p></section>`; return; }
-  if (UI.screen === 'rules') return renderRules(root);
-  if (!VM) return;
-  if (VM.phase === 'lobby') return renderLobby(root);
-  renderGame(root);
+  const app = $('#app');
+  const inGame = UI.screen === 'play' && VM && VM.phase === 'game';
+  // garder la position de défilement entre deux mises à jour
+  const keep = inGame && lastShell ? {main: ($('#main') || {}).scrollTop || 0, sheet: ($('#sheet') || {}).scrollTop || 0} : null;
+  lastShell = inGame;
+  if (inGame){ app.className = 'shell'; renderGame(app); if (keep){ $('#main').scrollTop = keep.main; $('#sheet').scrollTop = keep.sheet; } return; }
+  app.className = 'page';
+  if (UI.screen === 'home') return renderHome(app);
+  if (UI.screen === 'join' || UI.screen === 'joining') return renderJoin(app);
+  if (UI.screen === 'wait'){ app.innerHTML = `<section class="card stack"><h2>Connecté à la partie ${esc(UI.code || '')}</h2><p class="muted" style="margin:0">En attente de l'hôte…</p></section>`; return; }
+  if (UI.screen === 'rules') return renderRules(app);
+  if (VM && VM.phase === 'lobby') return renderLobby(app);
+  app.innerHTML = '';
 }
 function renderHome(root){
   root.innerHTML = `
-    <div class="hero">${EMBLEM}<h1>Les Mers de l'Ascension</h1><p>Jeu de dés et de moteur pour 2 à 5 pirates</p></div>
-    ${UI.err ? `<section class="paper"><p class="err">${esc(UI.err)}</p></section>` : ''}
-    <section class="paper stack">
-      <label class="field"><span class="label">Votre nom de pirate</span><input id="nameIn" maxlength="16" autocomplete="nickname" value="${esc(store.get('mers.name', ''))}" placeholder="Matelot"></label>
-      <button class="btn go block" type="button" data-act="host">Créer une partie</button>
-      <button class="btn sky block" type="button" data-act="join">Rejoindre une partie</button>
-      <button class="btn block" type="button" data-act="solo">Jouer seul contre des bots</button>
+    <div class="brand">${EMBLEM}<div><h1>Les Mers de l'Ascension</h1><span class="small muted">Dés et moteur · 2 à 5 joueurs</span></div></div>
+    ${UI.err ? `<section class="card"><p class="err">${esc(UI.err)}</p></section>` : ''}
+    <section class="card stack">
+      <label class="field"><span class="eyebrow">Votre nom</span><input id="nameIn" class="txt" maxlength="16" autocomplete="nickname" value="${esc(store.get('mers.name', ''))}" placeholder="Matelot"></label>
+      <button class="btn primary block" type="button" data-act="host">Créer une partie</button>
+      <button class="btn block" type="button" data-act="join">Rejoindre avec un code</button>
+      <button class="btn quiet block" type="button" data-act="solo">Jouer seul contre des bots</button>
     </section>
-    <section class="paper stack">
-      <h2>Jouer à plusieurs</h2>
+    <section class="card stack">
+      <span class="eyebrow">Jouer à plusieurs</span>
       <ol class="steps">
-        <li>Un joueur crée la partie : son téléphone affiche un <b>code de 4 lettres</b> et fait aussi jouer les bots.</li>
-        <li>Les autres touchent « Rejoindre une partie » et tapent ce code.</li>
-        <li>Il faut internet (Wi-Fi ou données) au moment de rejoindre. Ensuite, les téléphones jouent en direct entre eux.</li>
-        <li>Gardez l'application ouverte pendant la partie : l'écran reste allumé.</li>
+        <li>Un seul joueur crée la partie : il reçoit un <b>code de 4 lettres</b>.</li>
+        <li>Les autres touchent « Rejoindre avec un code » et le tapent. Ne créez qu'une seule partie par table.</li>
+        <li>Il faut internet au moment de rejoindre. Ensuite les téléphones jouent en direct.</li>
       </ol>
-      <button class="btn small" type="button" data-act="rules">Lire les règles</button>
+      <button class="btn link" type="button" data-act="rules" style="justify-self:start">Lire les règles</button>
     </section>
-    <p class="note" style="text-align:center;color:var(--paper)">Cartes v25 · ${VERSION}</p>`;
+    <p class="small muted" style="text-align:center;margin:0">Cartes v25 · ${VERSION}</p>`;
 }
 function renderJoin(root){
-  if (UI.screen === 'joining'){ root.innerHTML = `<section class="paper stack" style="text-align:center"><h2>Connexion à la partie ${esc(UI.code)}…</h2><p class="note">Quelques secondes.</p><button class="btn small" type="button" data-act="home" style="justify-self:center">Annuler</button></section>`; return; }
-  root.innerHTML = `<section class="paper stack" style="text-align:center">
+  if (UI.screen === 'joining'){ root.innerHTML = `<section class="card stack" style="text-align:center"><h2>Connexion à ${esc(UI.code)}…</h2><p class="muted" style="margin:0">Quelques secondes.</p><button class="btn link" type="button" data-act="home" style="justify-self:center">Annuler</button></section>`; return; }
+  root.innerHTML = `<section class="card stack">
     <h2>Rejoindre une partie</h2>
-    <p class="note">Demandez à l'hôte le code affiché sur son téléphone.</p>
+    <p class="muted" style="margin:0">Tapez le code affiché sur le téléphone de l'hôte.</p>
     ${UI.err ? `<p class="err">${esc(UI.err)}</p>` : ''}
-    <input id="codeIn" class="codein" size="4" autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="text" aria-label="Code de la partie" value="${esc(UI.code || '')}" placeholder="ABCD">
-    <button class="btn go block" type="button" data-act="joingo">Rejoindre</button>
-    <button class="btn small" type="button" data-act="home" style="justify-self:center">Retour</button></section>`;
+    <input id="codeIn" class="codein" size="4" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Code de la partie" value="${esc(UI.code || '')}" placeholder="ABCD">
+    <button class="btn primary block" type="button" data-act="joingo">Rejoindre</button>
+    <button class="btn link" type="button" data-act="home" style="justify-self:center">Retour</button></section>`;
   const inp = $('#codeIn'); if (inp){ inp.focus(); inp.addEventListener('keydown', e => { if (e.key === 'Enter') guestJoin(inp.value); }); }
 }
 function renderRules(root){
-  root.innerHTML = `<section class="paper rules">
-    <div class="head"><h2 class="ribbon-h">Règles</h2><button class="btn small" type="button" data-act="${VM ? 'back' : 'home'}">Retour</button></div>
+  root.innerHTML = `<section class="card rules">
+    <div class="sec-h" style="margin-bottom:10px"><h2>Règles</h2><button class="btn link" type="button" data-act="${VM ? 'back' : 'home'}">Retour</button></div>
     <p><b>But.</b> Être le premier à atteindre l'objectif en 👑 (10, ou 8 en mode court). La victoire est immédiate.</p>
     <p><b>Mise en place.</b> Chacun reçoit la Carte de Base et 2🪙. Le premier joueur est tiré au sort.</p>
     <p><b>Ordre du tour.</b> Le dernier joueur d'un tour de table devient le premier du suivant : il joue deux fois de suite.</p>
@@ -872,112 +837,112 @@ function renderRules(root){
     <p><b>Tous les lancers.</b> La Carte de Base et certaines cartes Récifs s'activent aussi quand un adversaire obtient leur valeur.</p>
     <p><b>2. Port.</b> Vous pouvez d'abord rafraîchir le marché pour 2🪙, une fois par tour. Puis une seule action : prendre la carte gratuite, acheter une carte ou ne rien faire. Ensuite, convertissez 10🪙 en 1👑 autant de fois que vous voulez.</p>
     <p><b>Carte gratuite.</b> La première carte du marché est gratuite, une fois par tour de table. Si personne ne l'a prise, elle part sous la pioche au tour de table suivant.</p>
-    <p><b>Plateau.</b> 6 emplacements de cartes normales, Carte de Base comprise, et 1 emplacement premium ⭐. Plateau plein : défaussez une carte, qui part sous la pioche.</p>
-    <p><b>Payer ou passer.</b> S'il n'a pas X🪙 ou refuse, aucune de ses cartes ne s'active à son prochain tour. Ne se cumule pas.</p>
+    <p><b>Plateau.</b> 6 cartes normales, Carte de Base comprise, et 1 premium ★. Plateau plein : défaussez une carte, qui part sous la pioche.</p>
+    <p><b>Réactions.</b> Pendant le tour d'un autre, on peut vous demander de payer ou de passer votre prochain tour : c'est vous qui choisissez.</p>
     <p><b>Copier.</b> Un Miroir copie une carte normale de la valeur indiquée. Jamais une premium, un Miroir ou une carte Courants.</p>
   </section>`;
 }
 function renderLobby(root){
-  const isHost = ROLE === 'host';
-  const seats = VM.seats || [];
-  const kindTag = s => s.kind === 'bot' ? '<span class="tag">Bot</span>' : (s.kind === 'local' ? '<span class="tag ok">Hôte</span>' : '<span class="tag ok">Téléphone</span>');
-  const codeBlock = VM.codeState === 'ok' && VM.code
-    ? `<section class="paper stack" style="text-align:center"><span class="label">Code de la partie</span><div class="code" aria-label="Code ${esc(VM.code)}">${[...VM.code].map(ch => `<b>${esc(ch)}</b>`).join('')}</div>
-       ${isHost ? '<p class="note" style="margin:0">Vos amis touchent « Rejoindre une partie » et tapent ce code.</p>' : ''}</section>`
-    : (isHost ? (VM.codeState === 'wait' ? `<section class="paper"><p class="note" style="margin:0">Création du code de la partie…</p></section>`
-      : VM.codeState === 'err' ? `<section class="paper stack"><p class="err">${esc(VM.codeErr)}</p><div class="row"><button class="btn sky" type="button" data-act="opencode">Réessayer</button><span class="note">Vous pouvez aussi jouer contre des bots sans internet.</span></div></section>`
-      : `<section class="paper stack"><p class="note" style="margin:0">Pour inviter des amis, il faut un code (internet nécessaire au moment où ils rejoignent).</p><button class="btn sky" type="button" data-act="opencode">Inviter des amis</button></section>`) : '');
+  const isHost = ROLE === 'host', seats = VM.seats || [];
+  const kindTag = s => s.kind === 'bot' ? '<span class="tag">bot</span>' : (s.kind === 'local' ? '<span class="tag accent">hôte</span>' : '<span class="tag good">connecté</span>');
+  let codeBlock = '';
+  if (VM.codeState === 'ok' && VM.code){
+    codeBlock = `<section class="card stack" style="text-align:center"><span class="eyebrow">Code de la partie</span>
+      <div class="code" aria-label="Code ${esc(VM.code)}">${[...VM.code].map(ch => `<b>${esc(ch)}</b>`).join('')}</div>
+      ${isHost ? '<p class="small muted" style="margin:0">Les autres touchent « Rejoindre avec un code » et tapent ces 4 lettres.</p>' : ''}</section>`;
+  } else if (isHost){
+    codeBlock = VM.codeState === 'wait' ? `<section class="card"><p class="muted" style="margin:0">Création du code…</p></section>`
+      : VM.codeState === 'err' ? `<section class="card stack"><p class="err">${esc(VM.codeErr)}</p><button class="btn primary" type="button" data-act="opencode">Réessayer</button><p class="small muted" style="margin:0">Vous pouvez aussi jouer contre des bots sans internet.</p></section>`
+      : `<section class="card stack"><p class="muted" style="margin:0">Pour inviter des amis, créez un code (internet nécessaire quand ils rejoignent).</p><button class="btn" type="button" data-act="opencode">Inviter des amis</button></section>`;
+  }
   root.innerHTML = codeBlock + `
-    <section class="paper stack">
-      <div class="head" style="margin:0"><h2 class="ribbon-h">Équipage</h2><span class="note">${seats.length}/5 joueurs</span></div>
-      <div class="seats">${seats.map((s, i) => `<div class="seat">${avHTML(s.n, i)}<span class="nmx">${esc(s.n)}${i === VM.me ? ' <span class="note">(vous)</span>' : ''}</span>${kindTag(s)}
-        ${isHost && i > 0 ? `<button class="btn small" type="button" data-rm="${i}" aria-label="Retirer ${esc(s.n)}">✕</button>` : ''}</div>`).join('')}</div>
-      ${isHost ? `<div class="row">
-        <button class="btn" type="button" data-act="addbot" ${seats.length >= 5 ? 'disabled' : ''}>+ Bot</button></div>` : `<p class="note">L'hôte prépare la partie. Objectif : ${VM.goal}👑.</p>`}
+    <section class="card stack">
+      <div class="sec-h"><h2>Équipage</h2><span class="small muted">${seats.length}/5 joueurs</span></div>
+      <div>${seats.map((s, i) => `<div class="seat">${avHTML(s.n, i)}<span class="nm">${esc(s.n)}${i === VM.me ? ' <span class="small muted">(vous)</span>' : ''}</span>${kindTag(s)}
+        ${isHost && i > 0 ? `<button class="btn link" type="button" data-rm="${i}" aria-label="Retirer ${esc(s.n)}">Retirer</button>` : ''}</div>`).join('')}</div>
+      ${isHost ? `<button class="btn quiet" type="button" data-act="addbot" ${seats.length >= 5 ? 'disabled' : ''}>+ Ajouter un bot</button>` : `<p class="small muted" style="margin:0">L'hôte prépare la partie · objectif ${VM.goal}👑</p>`}
     </section>
-    ${isHost ? `<section class="paper stack">
-      <div class="row"><span class="label" style="width:90px">Objectif</span>
-        <div class="seg"><input type="radio" name="goal" id="g10" value="10" ${LOBBY.goal === 10 ? 'checked' : ''}><label for="g10">10👑</label><input type="radio" name="goal" id="g8" value="8" ${LOBBY.goal === 8 ? 'checked' : ''}><label for="g8">Mode court · 8👑</label></div></div>
-      <div class="row"><span class="label" style="width:90px">Bots</span>
+    ${isHost ? `<section class="card stack">
+      <div class="row"><span class="eyebrow" style="width:80px">Objectif</span>
+        <div class="seg"><input type="radio" name="goal" id="g10" value="10" ${LOBBY.goal === 10 ? 'checked' : ''}><label for="g10">10👑</label><input type="radio" name="goal" id="g8" value="8" ${LOBBY.goal === 8 ? 'checked' : ''}><label for="g8">Court · 8👑</label></div></div>
+      <div class="row"><span class="eyebrow" style="width:80px">Bots</span>
         <div class="seg">${[[1400,'Lents'],[700,'Normaux'],[250,'Rapides']].map(([v, l], i) => `<input type="radio" name="spd" id="sp${i}" value="${v}" ${SPEED === v ? 'checked' : ''}><label for="sp${i}">${l}</label>`).join('')}</div></div>
-      <button class="btn go block" type="button" data-act="start" ${seats.length < 2 ? 'disabled' : ''}>Lancer la partie</button>
-      ${seats.length < 2 ? '<p class="note">Il faut au moins 2 joueurs (bots compris).</p>' : ''}
+      <button class="btn primary block" type="button" data-act="start" ${seats.length < 2 ? 'disabled' : ''}>Lancer la partie</button>
+      ${seats.length < 2 ? '<p class="small muted" style="margin:0">Il faut au moins 2 joueurs, bots compris.</p>' : ''}
     </section>` : ''}
-    <button class="btn small" type="button" data-act="quit" style="justify-self:start">Quitter</button>`;
+    <button class="btn link" type="button" data-act="quit" style="justify-self:start">Quitter</button>`;
 }
-function renderGame(root){
+function renderGame(app){
   const v = VM, me = v.players[v.me], names = v.players.map(p => p.n);
-  const myTurn = v.active === v.me;
-  // En-tête : équipage
-  const head = `<section class="paper hdr">
-    <div class="top"><h2>Tour de table ${v.round}</h2><span class="chipinfo ${v.free ? 'ok' : 'no'}">${v.free ? 'Carte gratuite dispo' : 'Gratuite déjà prise'}</span>
-      <button class="btn small" type="button" data-act="menu" aria-label="Menu">☰</button></div>
-    <div class="crew">${v.order.map((s, i) => { const p = v.players[s]; return `<div class="mate ${s === v.active && v.winner < 0 ? 'on' : ''} ${s === v.me ? 'me' : ''} ${i < v.pos ? 'done' : ''}">
-      ${i === 0 ? '<span class="first">1er</span>' : ''}${p.skip ? '<span class="sk" title="Passe son prochain tour">⛔</span>' : ''}
-      ${avHTML(p.n, s)}<span class="mn">${esc(p.n)}</span><span class="ms">${p.k}👑 ${p.c}🪙</span></div>`; }).join('')}</div>
-  </section>`;
+  const myTurn = v.active === v.me && v.winner < 0;
+  const activeName = esc(v.players[v.active].n);
+  const status = v.winner >= 0 ? 'Partie terminée' : (myTurn ? 'À vous de jouer' : `Tour de ${activeName}`);
+  const bar = `<header class="bar">
+    <div class="l1"><span class="status ${myTurn ? 'mine' : ''}">${status} <small>· tour de table ${v.round}</small></span>
+      <span class="res">${me.c} 🪙 · ${me.k} 👑</span>
+      <button class="iconbtn" type="button" data-act="menu" aria-label="Menu">${ICON.menu}</button></div>
+    <div class="crew" aria-label="Ordre du tour">${v.order.map((s, i) => { const p = v.players[s]; return `<span class="mate ${s === v.active && v.winner < 0 ? 'on' : ''} ${i < v.pos ? 'done' : ''}">${avHTML(p.n, s)}${esc(p.n)}${s === v.me ? ' (vous)' : ''}<span class="k">${p.k}👑 ${p.c}🪙</span>${i === 0 ? '<span class="tag">1er</span>' : ''}${p.skip ? '<span class="tag warn">passe</span>' : ''}</span>`; }).join('')}</div>
+  </header>`;
   let body = '';
   if (TAB === 'navire'){
     const covered = new Set(me.cards.map(([k]) => def(k).d));
-    const exhausted = myTurn ? v.used : [];
-    body = `<section class="paper">
-      <div class="head" style="margin-bottom:6px"><h2 class="ribbon-h">Votre navire</h2>${me.skip ? '<span class="tag warn">Vous passez votre prochain tour</span>' : ''}</div>
-      ${statsHTML(me)}${progHTML(me, v.goal)}
-      <div style="margin-top:10px"><span class="label">Valeurs couvertes · ${chanceOf(me.cards)} % de chance d'activer à votre lancer</span>
-      <div class="album">${[...Array(11)].map((_, i) => i + 2).map(x => `<div class="tile ${exhausted.includes(x) ? 'used' : (covered.has(x) ? 'on' : '')}"><b>${x}</b><small>${pct(x).replace(' %','')}</small></div>`).join('')}</div></div>
-      <div class="cards">${[...me.cards].sort((a, b) => def(a[0]).d - def(b[0]).d).map(([k, u]) => cardHTML(k, u)).join('')}</div>
-    </section>`;
+    const exhausted = v.active === v.me ? v.used : [];
+    body = `<section class="card sec">
+        <div class="sec-h"><h2>Votre navire</h2><span class="small muted">${me.k} / ${v.goal} 👑</span></div>
+        ${progHTML(me.k, v.goal)}${statsHTML(me)}
+        ${me.skip ? '<span class="tag warn" style="justify-self:start">Vous passez votre prochain tour</span>' : ''}
+        <span class="eyebrow">Valeurs de dé couvertes</span>
+        <div class="cov">${[...Array(11)].map((_, i) => i + 2).map(x => `<div class="cv ${exhausted.includes(x) ? 'used' : (covered.has(x) ? 'on' : '')}">${x}<small>${pct(x).replace(' %', '')}</small></div>`).join('')}</div>
+      </section>
+      <section class="list">${[...me.cards].sort((a, b) => def(a[0]).d - def(b[0]).d).map(([k, u]) => crdHTML(k, u)).join('')}</section>`;
   } else if (TAB === 'marche'){
     const canBuy = v.prompt && v.prompt.market;
-    body = `<section class="paper">
-      <div class="head"><h2 class="ribbon-h">Marché du port</h2><span class="note">${v.deck} cartes dans la pioche</span></div>
-      ${canBuy ? '<p class="note" style="margin:0 0 6px">À vous : touchez « Prendre » ou « Acheter » sous une carte.</p>' : ''}
-      <div class="cards">${v.market.map(([k, u], i) => { const c = def(k), free = i === 0 && v.free, cost = free ? 0 : c.c, ok = canBuy && cost <= me.c;
-        return `<div class="slot">${cardHTML(k, u, {free})}<button class="btn ${ok ? 'go' : ''}" type="button" data-buy="${i}" ${ok ? '' : 'disabled'}>${free ? 'Prendre · gratuit' : 'Acheter · ' + c.c + '🪙'}</button></div>`; }).join('')}</div>
-    </section>`;
+    body = `<div class="sec-h"><h2>Marché</h2><span class="small muted">${v.free ? 'carte gratuite disponible' : 'gratuite déjà prise'} · pioche ${v.deck}</span></div>
+      ${canBuy ? '' : '<p class="small muted" style="margin:0">Vous pourrez acheter pendant votre tour, à l\'étape du port.</p>'}
+      <section class="list">${v.market.map(([k, u], i) => { const c = def(k), free = i === 0 && v.free, cost = free ? 0 : c.c, ok = canBuy && cost <= me.c;
+        const buy = canBuy ? `<button class="btn ${ok ? 'primary' : 'quiet'} sm" type="button" data-buy="${i}" ${ok ? '' : 'disabled'}>${free ? 'Prendre' : 'Acheter ' + c.c + ' 🪙'}</button>` : '';
+        return crdHTML(k, u, {free, buy}); }).join('')}</section>`;
   } else if (TAB === 'equipage'){
-    body = v.players.map((p, s) => s === v.me ? '' : `<section class="paper opp">
-      <div class="who">${avHTML(p.n, s)}<h3 style="color:${SEAT_COL[s]}">${esc(p.n)}</h3>${p.kind === 'bot' ? '<span class="tag">Bot</span>' : ''}${p.skip ? '<span class="tag warn">Passe son tour</span>' : ''}</div>
-      ${statsHTML(p)}${progHTML(p, v.goal)}
-      <div class="minis">${[...p.cards].sort((a, b) => def(a[0]).d - def(b[0]).d).map(([k, u]) => miniHTML(k, u)).join('')}</div></section>`).join('');
+    body = v.players.map((p, s) => s === v.me ? '' : `<section class="card opp">
+      <div class="opp-h">${avHTML(p.n, s)}<h3>${esc(p.n)}</h3>${p.kind === 'bot' ? '<span class="tag">bot</span>' : ''}${p.skip ? '<span class="tag warn">passe son tour</span>' : ''}<span class="res">${p.c} 🪙 · ${p.k} 👑</span></div>
+      ${progHTML(p.k, v.goal)}
+      <div class="list">${[...p.cards].sort((a, b) => def(a[0]).d - def(b[0]).d).map(([k, u]) => crdHTML(k, u, {mini:true})).join('')}</div></section>`).join('');
   } else {
-    body = `<section class="paper"><div class="head"><h2 class="ribbon-h">Journal de bord</h2></div>
+    body = `<section class="card sec"><h2>Journal</h2>
       <div class="log">${[...v.log].reverse().map(([t, c]) => `<div class="${esc(c)}">${fmt(t, names)}</div>`).join('')}</div></section>`;
   }
-  root.innerHTML = head + body;
-  // Panneau d'action
+  // panneau d'action
   const die = n => `<div class="die ${v.rolling ? 'spin' : ''}" aria-label="Dé : ${n}">${[...Array(9)].map((_, i) => `<i class="${PIPS[n].includes(i) ? 'on' : ''}"></i>`).join('')}</div>`;
-  const tray = `<div class="tray">${die(v.dice[0])}${die(v.dice[1])}<span class="sum">${v.dice[0] + v.dice[1]}</span><span class="ex">${v.used.length ? 'Épuisées : <b>' + v.used.slice().sort((a,b)=>a-b).join(', ') + '</b>' : 'Tour de <b>' + esc(v.players[v.active].n) + '</b>'}</span></div>`;
+  const tray = `<div class="tray">${die(v.dice[0])}${die(v.dice[1])}<span class="sum">${v.dice[0] + v.dice[1]}</span><span class="ex">${v.used.length ? 'épuisées : ' + v.used.slice().sort((a, b) => a - b).join(', ') : ''}</span></div>`;
   let inner = '';
   if (v.winner >= 0){
     const rank = v.players.map((p, s) => [p, s]).sort((a, b) => b[0].k - a[0].k || b[0].c - a[0].c);
-    inner = `<h3 style="color:${SEAT_COL[v.winner]}">${v.winner === v.me ? 'Victoire ! Vous régnez sur les mers.' : esc(v.players[v.winner].n) + ' remporte la partie'}</h3>
-      <ol class="rank">${rank.map(([p, s], i) => `<li><span class="rk">${i + 1}</span>${avHTML(p.n, s)}<span class="grow">${esc(p.n)}</span><span>${p.k}👑 · ${p.c}🪙</span></li>`).join('')}</ol>
-      ${ROLE === 'host' ? '<button class="btn go block" type="button" data-act="again">Nouvelle partie avec le même équipage</button>' : '<p class="note">L\'hôte peut relancer une partie.</p>'}`;
+    inner = `<div class="ask"><span class="eyebrow mine">Fin de partie</span><h3>${v.winner === v.me ? 'Vous avez gagné !' : esc(v.players[v.winner].n) + ' a gagné'}</h3></div>
+      <ol class="rank">${rank.map(([p, s], i) => `<li><b>${i + 1}</b>${avHTML(p.n, s)}<span class="g">${esc(p.n)}</span><span class="res">${p.k} 👑 · ${p.c} 🪙</span></li>`).join('')}</ol>
+      ${ROLE === 'host' ? '<button class="btn primary block" type="button" data-act="again">Rejouer avec le même équipage</button>' : '<p class="small muted" style="margin:0">L\'hôte peut relancer une partie.</p>'}`;
   } else if (v.prompt){
     const pr = v.prompt;
-    inner = `${tray}<h3>${esc(pr.title)}</h3><p>${esc(pr.text)}</p>
-      <div class="opts ${pr.grid ? 'grid' : ''} ${pr.col ? 'col' : ''}">${pr.options.map((o, i) => `<button class="btn ${esc(o.c)}" type="button" data-opt="${i}" ${o.d ? 'disabled' : ''}>${esc(o.l)}</button>`).join('')}</div>
-      ${pr.market && TAB !== 'marche' ? '<button class="btn small sky" type="button" data-tab="marche">Voir le marché</button>' : ''}`;
+    const who = v.active === v.me ? 'À vous de jouer' : `Réaction · pendant le tour de ${activeName}`;
+    inner = `${tray}<div class="ask"><span class="eyebrow mine">${who}</span><h3>${esc(pr.title)}</h3><p>${esc(pr.text)}</p></div>
+      <div class="opts ${pr.grid ? 'grid' : ''} ${pr.col ? 'col' : ''}">${pr.options.map((o, i) => `<button class="btn ${o.c === 'go' ? 'primary' : (o.c === 'sky' ? '' : 'quiet')}" type="button" data-opt="${i}" ${o.d ? 'disabled' : ''}>${esc(o.l)}</button>`).join('')}</div>
+      ${pr.market && TAB !== 'marche' ? '<button class="btn link" type="button" data-tab="marche" style="justify-self:start">Ouvrir le marché pour acheter</button>' : ''}`;
   } else {
     const w = v.waiting >= 0 ? v.waiting : v.active;
-    inner = `${tray}<p class="wait">${avHTML(v.players[w].n, w)} ${esc(v.players[w].n)} ${w === v.active ? 'joue…' : 'doit répondre…'}</p>`;
+    inner = `${tray}<p class="wait">${avHTML(v.players[w].n, w)} ${w === v.active ? `${esc(v.players[w].n)} joue…` : `${esc(v.players[w].n)} choisit une réaction…`}</p>`;
   }
-  $('#sheet').innerHTML = `<div class="paper ${v.prompt ? 'mine' : ''}">${inner}</div>`;
-  // Onglets
-  const tabs = [['navire','⚓','Navire'],['marche','🏪','Marché'],['equipage','🏴‍☠️','Équipage'],['journal','📜','Journal']];
-  $('#tabbar').innerHTML = tabs.map(([id, ic, l]) => `<button class="tab ${TAB === id ? 'on' : ''}" type="button" data-tab="${id}" aria-pressed="${TAB === id}"><span class="ti">${ic}</span>${l}${id === 'marche' && v.prompt && v.prompt.market && TAB !== 'marche' ? '<span class="dot"></span>' : ''}</button>`).join('');
-  // Place le panneau au-dessus de la barre d'onglets
-  const sh = $('#sheet .paper'); if (sh) document.body.style.paddingBottom = `calc(var(--safe-b) + ${sh.offsetHeight + 96}px)`;
+  const tabs = [['navire', 'Navire'], ['marche', 'Marché'], ['equipage', 'Équipage'], ['journal', 'Journal']];
+  const nav = `<nav class="nav" aria-label="Onglets">${tabs.map(([id, l]) => `<button class="tab ${TAB === id ? 'on' : ''}" type="button" data-tab="${id}" aria-pressed="${TAB === id}">${ICON[id]}${l}${id === 'marche' && v.prompt && v.prompt.market && TAB !== 'marche' ? '<span class="badge"></span>' : ''}</button>`).join('')}</nav>`;
+  app.innerHTML = bar + `<main class="main" id="main">${body}</main><aside class="sheet ${v.prompt ? 'mine' : ''}" id="sheet" aria-live="polite">${inner}</aside>` + nav;
 }
 function openMenu(){
   const o = $('#overlay'); o.hidden = false;
-  o.innerHTML = `<div class="paper modal stack" style="text-align:left;justify-items:stretch">
+  o.innerHTML = `<div class="card modal">
     <h3>Menu</h3>
-    ${ROLE === 'host' ? `<div class="row"><span class="label">Bots</span><div class="seg">${[[1400,'Lents'],[700,'Normaux'],[250,'Rapides']].map(([v, l], i) => `<input type="radio" name="spd" id="msp${i}" value="${v}" ${SPEED === v ? 'checked' : ''}><label for="msp${i}">${l}</label>`).join('')}</div></div>` : ''}
+    ${VM && VM.code ? `<p class="small muted" style="margin:0">Code de la partie : <b style="color:var(--text)">${esc(VM.code)}</b></p>` : ''}
+    ${ROLE === 'host' ? `<div class="row"><span class="eyebrow">Bots</span><div class="seg">${[[1400,'Lents'],[700,'Normaux'],[250,'Rapides']].map(([v, l], i) => `<input type="radio" name="spd" id="msp${i}" value="${v}" ${SPEED === v ? 'checked' : ''}><label for="msp${i}">${l}</label>`).join('')}</div></div>` : ''}
     <button class="btn" type="button" data-act="rules">Règles</button>
     <button class="btn" type="button" data-act="askquit">${ROLE === 'host' ? 'Arrêter la partie pour tous' : 'Quitter la partie'}</button>
-    <button class="btn go" type="button" data-act="close">Reprendre</button></div>`;
+    <button class="btn primary" type="button" data-act="close">Reprendre</button></div>`;
 }
 
 /* ---------- Actions ---------- */
@@ -1004,7 +969,7 @@ document.addEventListener('click', e => {
   if (!t) return;
   if (t.dataset.opt !== undefined && VM && VM.prompt){ onLocalAnswer({id:VM.prompt.id, i:+t.dataset.opt}); return; }
   if (t.dataset.buy !== undefined && VM && VM.prompt && VM.prompt.market){ onLocalAnswer({id:VM.prompt.id, buy:+t.dataset.buy}); return; }
-  if (t.dataset.tab){ TAB = t.dataset.tab; render(); window.scrollTo({top:0}); return; }
+  if (t.dataset.tab){ TAB = t.dataset.tab; lastShell = false; render(); return; }
   if (t.dataset.rm !== undefined && ROLE === 'host' && !G){
     const s = LOBBY.seats[+t.dataset.rm];
     if (s && s.kind !== 'local'){ LOBBY.seats.splice(+t.dataset.rm, 1); if (s.conn){ const c = s.conn; c.onclose = null; c.send(JSON.stringify({t:'reject', reason:"L'hôte vous a retiré de la partie."})); setTimeout(() => c.close(), 300); } sync(true); }
@@ -1024,7 +989,7 @@ document.addEventListener('click', e => {
   else if (a === 'again') { gid++; pending = null; G = null; LOBBY.seats = LOBBY.seats.filter(s => s.kind !== 'remote' || (s.conn && s.conn.isOpen())); sync(true); }
   else if (a === 'menu') openMenu();
   else if (a === 'close') closeOverlay();
-  else if (a === 'askquit') { const o = $('#overlay'); o.innerHTML = `<div class="paper modal stack"><h3>${ROLE === 'host' ? 'Arrêter la partie pour tout le monde ?' : 'Quitter la partie ?'}</h3><p class="note">${ROLE === 'host' ? 'Les autres téléphones seront déconnectés.' : 'Un bot prendra votre place.'}</p><div class="row" style="justify-content:center"><button class="btn" type="button" data-act="close">Non</button><button class="btn go" type="button" data-act="quit">Oui</button></div></div>`; }
+  else if (a === 'askquit') { const o = $('#overlay'); o.innerHTML = `<div class="card modal"><h3>${ROLE === 'host' ? 'Arrêter la partie pour tout le monde ?' : 'Quitter la partie ?'}</h3><p class="note">${ROLE === 'host' ? 'Les autres téléphones seront déconnectés.' : 'Un bot prendra votre place.'}</p><div class="row" style="justify-content:center"><button class="btn" type="button" data-act="close">Non</button><button class="btn go" type="button" data-act="quit">Oui</button></div></div>`; }
   else if (a === 'quit') quitAll();
 });
 document.addEventListener('input', e => {

@@ -1,5 +1,5 @@
 /* Les Mers de l'Ascension : met l'application en cache pour jouer sans internet. */
-const CACHE = 'mers-v25-app2';
+const CACHE = 'mers-v25-app3';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
